@@ -36,7 +36,7 @@ const sendEmail = async (to, subject, text) => {
 const sendResetPasswordEmail = async (to, token) => {
   const subject = 'Reset password';
   // replace this url with the link to the reset password page of your front-end app
-  const resetPasswordUrl = `http://link-to-app/reset-password?token=${token}`;
+  const resetPasswordUrl = `${config.websiteUrl}/api/v1/reset-password?token=${token}`;
   const text = `Dear user,
 To reset your password, click on this link: ${resetPasswordUrl}
 If you did not request any password resets, then ignore this email.`;
@@ -52,7 +52,7 @@ If you did not request any password resets, then ignore this email.`;
 const sendVerificationEmail = async (to, token) => {
   const subject = 'Email Verification';
   // replace this url with the link to the email verification page of your front-end app
-  const verificationEmailUrl = `http://localhost:3000/api/v1/auth/verify-email?token=${token}`;
+  const verificationEmailUrl = `${config.websiteUrl}/api/v1/auth/verify-email?token=${token}`;
   const text = `Click this link to verify your email: ${verificationEmailUrl}`;
   await sendEmail(to, subject, text);
 };

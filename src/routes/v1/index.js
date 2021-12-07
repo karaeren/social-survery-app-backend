@@ -23,7 +23,7 @@ defaultRoutes.forEach((route) => {
 });
 
 // Swagger docs
-if (config.env === 'development') {
+if (config.env === 'development' || config.prodSwagger) {
   router.use(
     '/docs',
     basicAuth({

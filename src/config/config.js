@@ -10,6 +10,7 @@ const envVarsSchema = Joi.object()
       .valid('production', 'development', 'test')
       .required(),
     PORT: Joi.number().default(3000),
+    WEBSITE_URL: Joi.string().description('Website URL'),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
@@ -31,6 +32,9 @@ const envVarsSchema = Joi.object()
     EMAIL_FROM: Joi.string().description(
       'the from field in the emails sent by the app'
     ),
+    PROD_SWAGGER: Joi.bool().description(
+      'Switch to show Swagger docs in production or not'
+    ),
   })
   .unknown();
 
@@ -45,6 +49,7 @@ if (error) {
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  websiteUrl: envVars.WEBSITE_URL,
   mongoose: {
     url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
     options: {
@@ -72,4 +77,5 @@ module.exports = {
     },
     from: envVars.EMAIL_FROM,
   },
+  prodSwagger: envVars.PROD_SWAGGER
 };
