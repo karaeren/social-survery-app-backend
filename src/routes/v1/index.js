@@ -1,4 +1,5 @@
 const express = require('express');
+const basicAuth = require('express-basic-auth');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
@@ -23,7 +24,14 @@ defaultRoutes.forEach((route) => {
 
 // Swagger docs
 if (config.env === 'development') {
-  router.use('/docs', docsRoute);
+  router.use(
+    '/docs',
+    basicAuth({
+      users: { admin: 'isütez' },
+      challenge: true,
+    }),
+    docsRoute
+  );
 }
 
 module.exports = router;
