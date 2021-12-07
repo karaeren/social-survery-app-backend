@@ -247,7 +247,7 @@
 /**
  * @swagger
  * /auth/verify-email:
- *   post:
+ *   get:
  *     summary: verify email
  *     tags: [Auth]
  *     parameters:
@@ -258,8 +258,12 @@
  *           type: string
  *         description: The verify email token
  *     responses:
- *       "204":
- *         description: No content
+ *       "200":
+ *         description: email verified
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: email verified
  *       "401":
  *         description: verify email failed
  *         content:
