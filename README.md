@@ -18,3 +18,4 @@ mongo
 use admin
 db.createUser({user:"user", pwd:"password", roles:["root"]});
 ```
+.env dosyasına gerekli değişkenler yazıldıktan sonra Node uygulamasının tekrar çalıştırılması (eğer Docker ile çalıştırılıyorsa konteynerların kapatılıp açılması) gerekiyor.
