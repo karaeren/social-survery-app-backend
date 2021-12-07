@@ -12,6 +12,8 @@ const envVarsSchema = Joi.object()
     PORT: Joi.number().default(3000),
     WEBSITE_URL: Joi.string().description('Website URL'),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
+    MONGODB_USERNAME: Joi.string().required().description('Mongo DB username'),
+    MONGODB_PWD: Joi.string().required().description('Mongo DB password'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
       .default(30)
@@ -53,6 +55,11 @@ module.exports = {
   mongoose: {
     url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
     options: {
+      auth: {
+        authSource: 'admin',
+      },
+      user: envVars.MONGODB_USERNAME,
+      pass: envVars.MONGODB_PWD,
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -77,5 +84,5 @@ module.exports = {
     },
     from: envVars.EMAIL_FROM,
   },
-  prodSwagger: envVars.PROD_SWAGGER
+  prodSwagger: envVars.PROD_SWAGGER,
 };

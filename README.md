@@ -9,4 +9,12 @@ Sistemde [Node.js](https://nodejs.org/en/download/) >=12.0.0 sürümü ve [Yarn]
 
 # Notlar
 
-Dosya dizininde ayrıca bir ".env" dosyası olmalı. Bununla ilgili örnek ".env.example" dosyasında bulunmaktadır. Bu example dosyası development aşamasında ismi değiştirilerek kullanılabilir.
+* Dosya dizininde ayrıca bir ".env" dosyası olmalı. Bununla ilgili örnek ".env.example" dosyasında bulunmaktadır. Bu example dosyası development aşamasında ismi değiştirilerek kullanılabilir.
+
+* Sıfırdan kurulmuş bir konteynerda, MongoDB kullanıcı adı ve şifre oluşturmak için `docker ps` ile MongoDB konteynerının adını bulup `docker exec -it konteyner-adı bash` komutu ile konteynera shell izni alınmalıdır. Bu shellden de gerekli kullanıcı oluşturulmalıdır. Örnek adımlar;
+```
+docker exec -it social-survey-app-backend_mongodb_1 bash
+mongo
+use admin
+db.createUser({user:"user", pwd:"password", roles:["root"]});
+```
