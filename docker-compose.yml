@@ -21,6 +21,7 @@ services:
       - '27017:27017'
     volumes:
       - dbdata:/data/db
+    command: [--auth]
     networks:
       - node-network
 
