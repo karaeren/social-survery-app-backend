@@ -2,6 +2,11 @@
 
 "Social Survey App" projesi, **backend** tarafı. Node.js ile yazılmakta.
 
+[Live Api @ https://socialsurveyapp.software/api/v1/](https://socialsurveyapp.software/api/v1/)
+
+[Live Swagger Docs @ https://socialsurveyapp.software/api/v1/docs](https://socialsurveyapp.software/api/v1/docs)
+
+(id: admin, pw: isütez)
 
 # Kurulum
 
