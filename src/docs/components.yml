@@ -47,6 +47,20 @@ components:
         message:
           type: string
 
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+      example:
+        id: 61af4cfe6ab0c7226415c9c0
+        name: Test Category
+        color: "#FFFFFF"
+
   responses:
     DuplicateEmail:
       description: Email already taken

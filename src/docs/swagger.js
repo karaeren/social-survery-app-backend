@@ -9,7 +9,11 @@ const swagger = {
   },
   servers: [
     {
-      url: `${config.env === 'production' ? config.websiteUrl : 'http://localhost:' + config.port}/api/v1`
+      url: `${
+        config.env === 'production'
+          ? config.websiteUrl
+          : 'http://localhost:' + config.port
+      }/api/v1`,
     },
   ],
 };
