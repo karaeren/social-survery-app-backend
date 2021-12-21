@@ -15,4 +15,17 @@ router
     surveyController.createCategory
   );
 
+router
+  .route('/categories/:categoryId')
+  .patch(
+    auth('manageCategories'),
+    validate(surveyValidation.updateCategory),
+    surveyController.updateCategory
+  )
+  .delete(
+    auth('manageCategories'),
+    validate(surveyValidation.deleteCategory),
+    surveyController.deleteCategory
+  );
+
 module.exports = router;

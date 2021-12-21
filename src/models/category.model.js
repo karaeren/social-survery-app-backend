@@ -11,10 +11,29 @@ const categorySchema = mongoose.Schema({
     required: true,
     default: '#FFFFFF',
   },
+  rank: {
+    type: Number,
+    default: 0, // 0 means unimportant, positive numbers means rank of importance
+  },
 });
 
 // add plugin that converts mongoose to json
 categorySchema.plugin(toJSON);
+
+/**
+ * Check if rank is taken
+ * @param {number} rank - Rank
+ * @param {ObjectId} [excludeCategoryId] - The id of the category to be excluded
+ * @returns {Promise<boolean>}
+ */
+categorySchema.statics.isRankTaken = async function (rank, excludeCategoryId) {
+  if (rank === 0) return false;
+  const category = await this.findOne({
+    rank,
+    _id: { $ne: excludeCategoryId },
+  });
+  return !!category;
+};
 
 /**
  * @typedef User

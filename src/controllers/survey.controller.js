@@ -13,4 +13,22 @@ const createCategory = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send({ category });
 });
 
-module.exports = { getCategories, createCategory };
+const updateCategory = catchAsync(async (req, res) => {
+  const category = await surveyService.updateCategoryById(
+    req.params.categoryId,
+    req.body
+  );
+  res.send(category);
+});
+
+const deleteCategory = catchAsync(async (req, res) => {
+  await surveyService.deleteCategoryById(req.params.categoryId);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+module.exports = {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+};

@@ -56,10 +56,13 @@ components:
           type: string
         color:
           type: string
+        rank:
+          type: number
       example:
         id: 61af4cfe6ab0c7226415c9c0
         name: Test Category
         color: "#FFFFFF"
+        rank: 1
 
   responses:
     DuplicateEmail:
@@ -71,6 +74,15 @@ components:
           example:
             code: 400
             message: Email already taken
+    DuplicateCategoryRank:
+      description: Rank already taken
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Rank already taken
     Unauthorized:
       description: Unauthorized
       content:
