@@ -12,7 +12,7 @@ const swagger = {
       url: `${
         config.env === 'production'
           ? config.websiteUrl
-          : 'http://localhost:' + config.port
+          : `http://localhost:${config.port}`
       }/api/v1`,
     },
   ],

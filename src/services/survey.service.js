@@ -26,10 +26,7 @@ const getCategories = async () => {
  * @returns {Promise<Category>}
  */
 const createCategory = async (categoryBody) => {
-  if (
-    categoryBody.rank &&
-    (await Category.isRankTaken(categoryBody.rank))
-  ) {
+  if (categoryBody.rank && (await Category.isRankTaken(categoryBody.rank))) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Rank already taken');
   }
   return Category.create(categoryBody);
