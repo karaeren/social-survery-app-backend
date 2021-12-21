@@ -30,7 +30,7 @@ categorySchema.statics.isRankTaken = async function (rank, excludeCategoryId) {
   if (rank === 0) return false;
   const category = await this.findOne({
     rank,
-    _id: { $ne: excludeCategoryId },
+    ...(excludeCategoryId && { _id: { $ne: excludeCategoryId } }),
   });
   return !!category;
 };
