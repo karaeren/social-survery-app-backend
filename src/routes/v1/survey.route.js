@@ -6,6 +6,21 @@ const surveyController = require('../../controllers/survey.controller');
 
 const router = express.Router();
 
+// "/survey"
+router
+  .route('/')
+  .get(
+    auth(),
+    validate(surveyValidation.getSurveys),
+    surveyController.getSurveys
+  )
+  .post(
+    auth('manageSurveys'),
+    validate(surveyValidation.createSurvey),
+    surveyController.createSurvey
+  );
+
+// "/survey/categories"
 router
   .route('/categories')
   .get(auth(), surveyController.getCategories)

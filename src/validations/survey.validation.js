@@ -1,6 +1,24 @@
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
 
+const getSurveys = {
+  query: Joi.object().keys({
+    name: Joi.string(),
+    searchForName: Joi.bool().default(false),
+    categoryId: Joi.custom(objectId),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
+const createSurvey = {
+  body: Joi.object().keys({
+    name: Joi.string().required(),
+    categoryId: Joi.custom(objectId).required(),
+  }),
+};
+
 const createCategory = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -29,6 +47,8 @@ const deleteCategory = {
 };
 
 module.exports = {
+  getSurveys,
+  createSurvey,
   createCategory,
   updateCategory,
   deleteCategory,

@@ -1,6 +1,20 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
+const pick = require('../utils/pick');
 const { surveyService } = require('../services');
+
+const getSurveys = catchAsync(async (req, res) => {
+  const filter = pick(req.query, ['name', 'categoryId']);
+  const options = pick(req.query, ['searchForName', 'sortBy', 'limit', 'page']);
+  const result = await surveyService.querySurveys(filter, options);
+  res.send(result);
+});
+
+const createSurvey = catchAsync(async (req, res) => {
+  const survey = await surveyService.createSurvey(req.body);
+
+  res.status(httpStatus.CREATED).send({ survey });
+});
 
 const getCategories = catchAsync(async (req, res) => {
   const result = await surveyService.getCategories();
@@ -27,6 +41,8 @@ const deleteCategory = catchAsync(async (req, res) => {
 });
 
 module.exports = {
+  getSurveys,
+  createSurvey,
   getCategories,
   createCategory,
   updateCategory,

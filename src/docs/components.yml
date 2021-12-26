@@ -47,6 +47,25 @@ components:
         message:
           type: string
 
+    Survey:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        questions:
+          type: array
+          items:
+            type: object
+      example:
+        id: 61af4cfe6ab0c7226415c9c0
+        name: Test Survey Title
+        category: 61af4cfe6ab0c7226415c9c0
+        questions: [{}]
+
     Category:
       type: object
       properties:

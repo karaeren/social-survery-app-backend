@@ -1,11 +1,40 @@
 const httpStatus = require('http-status');
-const { Category } = require('../models');
+const { Survey, Category } = require('../models');
 const ApiError = require('../utils/ApiError');
+
+/**
+ * Query for surveys
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @param {string} [options.searchForName] - Search for "name" instead of looking for an exact match
+ * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {number} [options.limit] - Maximum number of results per page (default = 10)
+ * @param {number} [options.page] - Current page (default = 1)
+ * @returns {Promise<QueryResult>}
+ */
+const querySurveys = async (filter, options) => {
+  const surveys = await Survey.paginate(filter, options);
+  return surveys;
+};
+
+/**
+ * Create a survey
+ * @param {Object} surveyBody
+ * @returns {Promise<Survey>}
+ */
+const createSurvey = async (surveyBody) => {
+  const findCategory = await Category.findOne({ _id: surveyBody.categoryId });
+  if (!findCategory) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Category is not valid');
+  }
+
+  return Survey.create(surveyBody);
+};
 
 /**
  * Get category by id
  * @param {ObjectId} id
- * @returns {Promise<User>}
+ * @returns {Promise<Category>}
  */
 const getCategoryById = async (id) => {
   return Category.findById(id);
@@ -69,6 +98,8 @@ const deleteCategoryById = async (categoryId) => {
 };
 
 module.exports = {
+  querySurveys,
+  createSurvey,
   getCategories,
   createCategory,
   updateCategoryById,

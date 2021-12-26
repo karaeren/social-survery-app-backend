@@ -36,7 +36,7 @@ categorySchema.statics.isRankTaken = async function (rank, excludeCategoryId) {
 };
 
 /**
- * @typedef User
+ * @typedef Category
  */
 const Category = mongoose.model('Category', categorySchema);
 
