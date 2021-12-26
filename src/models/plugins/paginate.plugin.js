@@ -44,8 +44,8 @@ const paginate = (schema) => {
 
     if (options.searchForName && filter.name) {
       filter.name = {
-        $regex: '.*' + filter.name + '.*',
-        $options: 'i', //case-insensitive
+        $regex: `.*${filter.name}.*`,
+        $options: 'i', // case-insensitive
       };
     }
 
