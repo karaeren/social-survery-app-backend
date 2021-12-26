@@ -42,6 +42,13 @@ const paginate = (schema) => {
         : 1;
     const skip = (page - 1) * limit;
 
+    if (options.searchForName && filter.name) {
+      filter.name = {
+        $regex: '.*' + filter.name + '.*',
+        $options: 'i', //case-insensitive
+      };
+    }
+
     const countPromise = this.countDocuments(filter).exec();
     let docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit);
 
