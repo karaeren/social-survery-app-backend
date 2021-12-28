@@ -95,6 +95,8 @@
  *                 type: string
  *               categoryId:
  *                 type: string
+ *               questions:
+ *                 type: array
  *             example:
  *               name: This is a survey title!
  *               categoryId: 61c21efb7dd2d812a3759557
@@ -126,6 +128,52 @@
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
+ */
+
+/**
+ * @swagger
+ * /survey/submit:
+ *   post:
+ *     summary: Submit survey answers
+ *     tags: [Survey]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - surveyId
+ *               - answers
+ *             properties:
+ *               surveyId:
+ *                 type: string
+ *               answers:
+ *                 type: array
+ *             example:
+ *               surveyId: 61cb1ceb26630302d76127ee
+ *               answers: [
+ *                 {
+ *                   quesion_id: 1,
+ *                   answer_id: 1
+ *                 }
+ *               ]
+ *     responses:
+ *       "204":
+ *         description: No content
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "400":
+ *         description: You already submitted this survey
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               code: 400
+ *               message: You already submitted this survey
  */
 
 /**
