@@ -156,7 +156,7 @@
  *               surveyId: 61cb1ceb26630302d76127ee
  *               answers: [
  *                 {
- *                   quesion_id: 1,
+ *                   question_id: 1,
  *                   answer_id: 1
  *                 }
  *               ]
