@@ -20,6 +20,15 @@ router
     surveyController.createSurvey
   );
 
+// "/survey/submit"
+router
+  .route('/submit')
+  .post(
+    auth(),
+    validate(surveyValidation.submitAnswers),
+    surveyController.submitAnswers
+  );
+
 // "/survey/categories"
 router
   .route('/categories')

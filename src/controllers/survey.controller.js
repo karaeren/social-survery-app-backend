@@ -16,6 +16,11 @@ const createSurvey = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send({ survey });
 });
 
+const submitAnswers = catchAsync(async (req, res) => {
+  await surveyService.submitAnswers(req.user, req.body);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 const getCategories = catchAsync(async (req, res) => {
   const result = await surveyService.getCategories();
   res.send(result);
@@ -43,6 +48,7 @@ const deleteCategory = catchAsync(async (req, res) => {
 module.exports = {
   getSurveys,
   createSurvey,
+  submitAnswers,
   getCategories,
   createCategory,
   updateCategory,

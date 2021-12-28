@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Survey, Category } = require('../models');
+const { Survey, Category, Submission } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -29,6 +29,66 @@ const createSurvey = async (surveyBody) => {
   }
 
   return Survey.create(surveyBody);
+};
+
+/**
+ * Submit answers to survey
+ * @param {Object} user
+ * @param {Object} submissionBody
+ * @returns {Promise}
+ */
+const submitAnswers = async (user, submissionBody) => {
+  // todo: check if user submitted this already
+  const findSurvey = await Survey.findOne({ _id: submissionBody.surveyId });
+  if (!findSurvey) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Survey is not valid');
+  }
+
+  try {
+    validateAnswers(findSurvey.questions, submissionBody.answers);
+  } catch (e) {
+    throw e;
+  }
+
+  await Submission.create({
+    userId: user._id,
+    ...submissionBody,
+  });
+};
+
+/**
+ * Compare users answers to survey's question and answer list and validate
+ * @param {Array} questions
+ * @param {Array} userAnswers
+ * @returns {true}
+ */
+const validateAnswers = (questions, userAnswers) => {
+  let questionMap = {};
+
+  for (const question of questions) {
+    questionMap[question.question_id] = [];
+    for (const answer of question.answers) {
+      questionMap[question.question_id].push(answer.answer_id);
+    }
+  }
+
+  for (const userAnswer of userAnswers) {
+    if (
+      questionMap[userAnswer.question_id] &&
+      questionMap[userAnswer.question_id].includes(userAnswer.answer_id)
+    ) {
+      delete questionMap[userAnswer.question_id];
+    } else {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Answers are not valid');
+    }
+  }
+
+  if (Object.keys(questionMap).length > 0) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Not all questions are answered'
+    );
+  }
 };
 
 /**
@@ -100,6 +160,7 @@ const deleteCategoryById = async (categoryId) => {
 module.exports = {
   querySurveys,
   createSurvey,
+  submitAnswers,
   getCategories,
   createCategory,
   updateCategoryById,
