@@ -98,6 +98,18 @@
  *             example:
  *               name: This is a survey title!
  *               categoryId: 61c21efb7dd2d812a3759557
+ *               questions: [
+ *                 {
+ *                   question_id: 1,
+ *                   question_text: "Question 1",
+ *                   answers: [
+ *                     {
+ *                       answer_id: 1,
+ *                       answer_text: "Answer 1"
+ *                     }
+ *                   ]
+ *                 }
+ *               ]
  *     responses:
  *       "201":
  *         description: OK

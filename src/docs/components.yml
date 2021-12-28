@@ -66,6 +66,29 @@ components:
         category: 61af4cfe6ab0c7226415c9c0
         questions: [{}]
 
+    QuestionObject:
+      type: object
+      properties:
+        question_id:
+          type: number
+        question_text:
+          type: string
+        answers:
+          type: array
+          items:
+            type: object
+            properties:
+              answer_id:
+                type: number
+              answer_text:
+                type: string
+      example:
+        question_id: 1
+        question_string: Question 1
+        answers:
+          answer_id: 1
+          answer_text: Answer 1
+
     Category:
       type: object
       properties:

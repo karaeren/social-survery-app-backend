@@ -16,6 +16,18 @@ const createSurvey = {
   body: Joi.object().keys({
     name: Joi.string().required(),
     categoryId: Joi.custom(objectId).required(),
+    questions: Joi.array()
+      .items({
+        question_id: Joi.number().integer().required(),
+        question_text: Joi.string().required(),
+        answers: Joi.array()
+          .items({
+            answer_id: Joi.number().integer().required(),
+            answer_text: Joi.string().required(),
+          })
+          .required(),
+      })
+      .required(),
   }),
 };
 
