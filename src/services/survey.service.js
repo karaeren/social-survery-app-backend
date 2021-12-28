@@ -38,7 +38,13 @@ const createSurvey = async (surveyBody) => {
  * @returns {Promise}
  */
 const submitAnswers = async (user, submissionBody) => {
-  // todo: check if user submitted this already
+  if (user.submittedSurveys.includes(submissionBody.surveyId)) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You already submitted this survey'
+    );
+  }
+
   const findSurvey = await Survey.findOne({ _id: submissionBody.surveyId });
   if (!findSurvey) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Survey is not valid');
@@ -54,6 +60,9 @@ const submitAnswers = async (user, submissionBody) => {
     userId: user._id,
     ...submissionBody,
   });
+
+  user.submittedSurveys.push(submissionBody.surveyId);
+  await user.save();
 };
 
 /**
