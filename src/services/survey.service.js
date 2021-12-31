@@ -97,6 +97,11 @@ const submitAnswers = async (user, submissionBody) => {
 
   user.submittedSurveys.push(submissionBody.surveyId);
   await user.save();
+
+  await Survey.findOneAndUpdate(
+    { _id: submissionBody.surveyId },
+    { $inc: { submissionCount: 1 } }
+  ).exec();
 };
 
 /**
