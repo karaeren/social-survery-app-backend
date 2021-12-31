@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 const { password, objectId } = require('./custom.validation');
 
 const getUsers = {
@@ -26,6 +26,8 @@ const updateUser = {
       email: Joi.string().email(),
       password: Joi.string().custom(password),
       name: Joi.string(),
+      birthdate: Joi.date().format('YYYY-MM-DD').utc(),
+      gender: Joi.string().valid('male', 'female', 'other'),
     })
     .min(1),
 };

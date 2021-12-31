@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
 
+const genderOptions = ['male', 'female', 'other'];
+
 const userSchema = mongoose.Schema(
   {
     name: {
@@ -52,6 +54,13 @@ const userSchema = mongoose.Schema(
         ref: 'Survey',
       },
     ],
+    birthdate: {
+      type: Date,
+    },
+    gender: {
+      type: String,
+      enum: genderOptions,
+    },
   },
   {
     timestamps: true,
