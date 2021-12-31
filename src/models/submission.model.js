@@ -7,6 +7,16 @@ const submissionSchema = mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  location: {
+    lat: {
+      type: Number,
+      required: true,
+    },
+    long: {
+      type: Number,
+      required: true,
+    },
+  },
   surveyId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Survey',

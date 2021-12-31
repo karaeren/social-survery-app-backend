@@ -151,13 +151,20 @@
  *             required:
  *               - surveyId
  *               - answers
+ *               - location
  *             properties:
  *               surveyId:
  *                 type: string
+ *               location:
+ *                 type: object
  *               answers:
  *                 type: array
  *             example:
  *               surveyId: 61cb1ceb26630302d76127ee
+ *               location: {
+ *                 lat: 41.008240,
+ *                 long: 28.978359
+ *               }
  *               answers: [
  *                 {
  *                   question_id: 1,

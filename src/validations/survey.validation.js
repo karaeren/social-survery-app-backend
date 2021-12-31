@@ -35,6 +35,12 @@ const createSurvey = {
 const submitAnswers = {
   body: Joi.object().keys({
     surveyId: Joi.custom(objectId).required(),
+    location: Joi.object()
+      .keys({
+        lat: Joi.number().required(),
+        long: Joi.number().required(),
+      })
+      .required(),
     answers: Joi.array()
       .items({
         question_id: Joi.number().integer().required(),
