@@ -89,16 +89,20 @@
  *             type: object
  *             required:
  *               - name
+ *               - description
  *               - categoryId
  *             properties:
  *               name:
+ *                 type: string
+ *               description:
  *                 type: string
  *               categoryId:
  *                 type: string
  *               questions:
  *                 type: array
  *             example:
- *               name: This is a survey title!
+ *               name: "This is a survey title!"
+ *               description: "This is an example description text..."
  *               categoryId: 61c21efb7dd2d812a3759557
  *               questions: [
  *                 {

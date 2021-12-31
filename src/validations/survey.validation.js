@@ -15,6 +15,7 @@ const getSurveys = {
 const createSurvey = {
   body: Joi.object().keys({
     name: Joi.string().required(),
+    description: Joi.string().required(),
     categoryId: Joi.custom(objectId).required(),
     questions: Joi.array()
       .items({

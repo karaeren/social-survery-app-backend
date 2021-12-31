@@ -6,10 +6,18 @@ const surveySchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     required: true,
+  },
+  submissionCount: {
+    type: Number,
+    default: 0,
   },
   questions: {
     type: Array,
