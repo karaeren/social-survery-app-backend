@@ -139,6 +139,8 @@
  *               name: fake name
  *               email: fake@example.com
  *               password: password1
+ *               birthdate: 2000-02-18
+ *               gender: male
  *     responses:
  *       "200":
  *         description: OK
