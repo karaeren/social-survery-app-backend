@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const httpStatus = require('http-status');
+const randomstring = require('randomstring');
 const config = require('../config/config');
 const userService = require('./user.service');
 const { Token } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
-const randomstring = require('randomstring');
 
 /**
  * Generate token
@@ -49,7 +49,7 @@ const saveToken = async (
     expires: expires.toDate(),
     type,
     blacklisted,
-    ...(code && { code: code }),
+    ...(code && { code }),
   });
   return tokenDoc;
 };

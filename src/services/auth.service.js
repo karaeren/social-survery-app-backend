@@ -101,7 +101,7 @@ const resetPasswordWithCode = async (email, code, newPassword) => {
     const tokenDoc = await Token.findOne({
       user: user.id,
       blacklisted: false,
-      code: code,
+      code,
     });
 
     await tokenService.verifyToken(tokenDoc.token, tokenTypes.RESET_PASSWORD);
