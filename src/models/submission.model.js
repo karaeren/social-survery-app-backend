@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const { toJSON } = require('./plugins');
 
 const submissionSchema = mongoose.Schema({
-  userId: {
+  shadowId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Shadow',
     required: true,
   },
   location: {

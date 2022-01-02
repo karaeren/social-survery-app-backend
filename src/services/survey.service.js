@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Survey, Category, Submission } = require('../models');
+const { Survey, Category, Submission, Shadow } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -90,8 +90,13 @@ const submitAnswers = async (user, submissionBody) => {
 
   validateAnswers(findSurvey.questions, submissionBody.answers);
 
+  const shadow = await Shadow.create({
+    birthdate: user.birthdate,
+    gender: user.gender,
+  });
+
   await Submission.create({
-    userId: user._id,
+    shadowId: shadow._id,
     ...submissionBody,
   });
 
