@@ -230,6 +230,52 @@
 
 /**
  * @swagger
+ * /auth/reset-password-code:
+ *   post:
+ *     summary: Reset password with code verification
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - code
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User email
+ *               code:
+ *                 type: string
+ *                 code: Verification code linked to the token
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 description: At least one number and one letter
+ *             example:
+ *               email: fake@example.com
+ *               code: ABC1
+ *               password: password1
+ *     responses:
+ *       "204":
+ *         description: No content
+ *       "401":
+ *         description: Password reset failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               code: 401
+ *               message: Password reset failed
+ */
+
+/**
+ * @swagger
  * /auth/send-verification-email:
  *   post:
  *     summary: Send verification email

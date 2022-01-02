@@ -82,6 +82,38 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
 };
 
 /**
+ * Reset password with code verification method
+ * @param {string} email
+ * @param {string} code
+ * @param {string} newPassword
+ * @returns {Promise}
+ */
+const resetPasswordWithCode = async (email, code, newPassword) => {
+  try {
+    const user = await userService.getUserByEmail(email);
+    if (!user) {
+      throw new ApiError(
+        httpStatus.NOT_FOUND,
+        'No users found with this email'
+      );
+    }
+
+    const tokenDoc = await Token.findOne({
+      user: user.id,
+      blacklisted: false,
+      code: code,
+    });
+
+    await tokenService.verifyToken(tokenDoc.token, tokenTypes.RESET_PASSWORD);
+
+    await userService.updateUserById(user.id, { password: newPassword });
+    await Token.deleteMany({ user: user.id, type: tokenTypes.RESET_PASSWORD });
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
+  }
+};
+
+/**
  * Verify email
  * @param {string} verifyEmailToken
  * @returns {Promise}
@@ -108,5 +140,6 @@ module.exports = {
   logout,
   refreshAuth,
   resetPassword,
+  resetPasswordWithCode,
   verifyEmail,
 };

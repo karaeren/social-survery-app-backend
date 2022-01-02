@@ -9,6 +9,10 @@ const tokenSchema = mongoose.Schema(
       required: true,
       index: true,
     },
+    code: {
+      type: String,
+      required: false,
+    },
     user: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'User',

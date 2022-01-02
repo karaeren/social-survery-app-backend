@@ -6,6 +6,7 @@ const userService = require('./user.service');
 const { Token } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const randomstring = require('randomstring');
 
 /**
  * Generate token
@@ -34,13 +35,21 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
  * @param {boolean} [blacklisted]
  * @returns {Promise<Token>}
  */
-const saveToken = async (token, userId, expires, type, blacklisted = false) => {
+const saveToken = async (
+  token,
+  userId,
+  expires,
+  type,
+  blacklisted = false,
+  code = ''
+) => {
   const tokenDoc = await Token.create({
     token,
     user: userId,
     expires: expires.toDate(),
     type,
     blacklisted,
+    ...(code && { code: code }),
   });
   return tokenDoc;
 };
@@ -132,8 +141,11 @@ const generateResetPasswordToken = async (email) => {
     resetPasswordToken,
     user.id,
     expires,
-    tokenTypes.RESET_PASSWORD
+    tokenTypes.RESET_PASSWORD,
+    false,
+    randomstring.generate({ length: 4, capitalization: 'uppercase' })
   );
+
   return resetPasswordToken;
 };
 

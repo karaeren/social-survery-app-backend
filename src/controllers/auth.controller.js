@@ -48,6 +48,11 @@ const resetPassword = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const resetPasswordWithCode = catchAsync(async (req, res) => {
+  await authService.resetPasswordWithCode(req.body.email, req.body.code, req.body.password);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 const sendVerificationEmail = catchAsync(async (req, res) => {
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(
     req.user
@@ -68,6 +73,7 @@ module.exports = {
   refreshTokens,
   forgotPassword,
   resetPassword,
+  resetPasswordWithCode,
   sendVerificationEmail,
   verifyEmail,
 };
