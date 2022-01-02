@@ -36,17 +36,15 @@ const sendEmail = async (to, subject, html) => {
  * @param {string} token
  * @returns {Promise}
  */
-const sendResetPasswordEmail = async (to, token) => {
+const sendResetPasswordEmail = async (to, code) => {
   const subject = 'Reset password';
-  const resetPasswordUrl = `${config.websiteUrl}/api/v1/reset-password?token=${token}`;
 
-  const filePath = path.join(__dirname, '../email/basic_template.html');
+  const filePath = path.join(__dirname, '../email/code_template.html');
   const source = fs.readFileSync(filePath, 'utf-8').toString();
   const template = handlebars.compile(source);
   const replacements = {
-    description: 'Click on the button to reset your password.',
-    button_href: resetPasswordUrl,
-    button_text: 'Reset Password',
+    description: 'Your password reset code:',
+    code,
   };
   const html = template(replacements);
 

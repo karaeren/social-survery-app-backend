@@ -137,16 +137,20 @@ const generateResetPasswordToken = async (email) => {
     expires,
     tokenTypes.RESET_PASSWORD
   );
+  const randomCode = randomstring.generate({
+    length: 4,
+    capitalization: 'uppercase',
+  });
   await saveToken(
     resetPasswordToken,
     user.id,
     expires,
     tokenTypes.RESET_PASSWORD,
     false,
-    randomstring.generate({ length: 4, capitalization: 'uppercase' })
+    randomCode
   );
 
-  return resetPasswordToken;
+  return { resetPasswordToken, code: randomCode };
 };
 
 /**
