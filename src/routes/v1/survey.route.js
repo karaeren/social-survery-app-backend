@@ -54,9 +54,6 @@ router
 
 router
   .route('/results/:surveyId')
-  .get(
-    validate(surveyValidation.getResults),
-    surveyController.getResults
-  );
+  .get(validate(surveyValidation.getResults), surveyController.getResults);
 
 module.exports = router;

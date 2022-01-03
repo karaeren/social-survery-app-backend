@@ -126,7 +126,7 @@ const submitAnswers = async (user, submissionBody) => {
  * @returns {Promise<Submission>}
  */
 const getSubmissionsForSurvey = async (surveyId) => {
-  return Submission.find({ surveyId: surveyId })
+  return Submission.find({ surveyId })
     .select('_id answers shadowId location')
     .populate('shadowId');
 };

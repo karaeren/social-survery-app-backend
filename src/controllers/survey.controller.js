@@ -56,8 +56,8 @@ const getResults = catchAsync(async (req, res) => {
 
   res.send({
     results: {
-      survey: survey,
-      submissions: submissions,
+      survey,
+      submissions,
     },
   });
 });
