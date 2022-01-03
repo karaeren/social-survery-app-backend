@@ -10,7 +10,7 @@ async function main() {
         `/api/v1/survey/results/${params.surveyId}`
       );
 
-      resultElem.innerText = JSON.stringify(response);
+      resultElem.innerText = JSON.stringify(response.data);
     } catch (error) {
       alert(error);
     }
