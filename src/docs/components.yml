@@ -106,6 +106,76 @@ components:
         color: "#FFFFFF"
         rank: 1
 
+    SurveyResults:
+      type: object
+      properties:
+        results:
+          type: object
+      example:
+        "results": {
+          "survey": {
+            "submissionCount": 2,
+            "questions": [
+              {
+                "question_id": 1,
+                "question_text": "Question 1",
+                "answers": [
+                  {
+                    "answer_id": 1,
+                    "answer_text": "Answer 1"
+                  }
+                ]
+              }
+            ],
+            "name": "This is a survey title!",
+            "categoryId": {
+              "color": "#FFA500",
+              "rank": 0,
+              "name": "Test Category",
+              "id": "61c21efb7dd2d812a3759557"
+            },
+            "id": "61cb2d003fd3f41bbcacc8d9"
+          },
+          "submissions": [
+            {
+              "location": {
+                "lat": 41.00824,
+                "long": 28.978359
+              },
+              "answers": [
+                {
+                  "question_id": 1,
+                  "answer_id": 1
+                }
+              ],
+              "shadowId": {
+                "birthdate": "2000-02-18T00:00:00.000Z",
+                "gender": "male",
+                "id": "61d20c82173a891768b8a358"
+              },
+              "id": "61d20c82173a891768b8a35a"
+            },
+            {
+              "location": {
+                "lat": 41.00824,
+                "long": 28.978359
+              },
+              "answers": [
+                {
+                  "question_id": 1,
+                  "answer_id": 1
+                }
+              ],
+              "shadowId": {
+                "birthdate": "2000-02-18T00:00:00.000Z",
+                "gender": "male",
+                "id": "61d20e2333a39d191277d9e5"
+              },
+              "id": "61d20e2333a39d191277d9e7"
+            }
+          ]
+        }
+
   responses:
     DuplicateEmail:
       description: Email already taken

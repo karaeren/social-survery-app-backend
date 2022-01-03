@@ -52,4 +52,11 @@ router
     surveyController.deleteCategory
   );
 
+router
+  .route('/results/:surveyId')
+  .get(
+    validate(surveyValidation.getResults),
+    surveyController.getResults
+  );
+
 module.exports = router;

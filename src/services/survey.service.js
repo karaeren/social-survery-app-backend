@@ -18,6 +18,17 @@ const querySurveys = async (filter, options) => {
 };
 
 /**
+ * Get survey by id
+ * @param {ObjectId} id
+ * @returns {Promise<Survey>}
+ */
+const getSurveyById = async (id, populate = false) => {
+  if (populate) return Survey.findById(id).populate('categoryId');
+
+  return Survey.findById(id);
+};
+
+/**
  * Create a survey
  * @param {Object} surveyBody
  * @returns {Promise<Survey>}
@@ -110,6 +121,17 @@ const submitAnswers = async (user, submissionBody) => {
 };
 
 /**
+ * Get all of the submissions for a survey
+ * @param {ObjectId} surveyId
+ * @returns {Promise<Submission>}
+ */
+const getSubmissionsForSurvey = async (surveyId) => {
+  return Submission.find({ surveyId: surveyId })
+    .select('_id answers shadowId location')
+    .populate('shadowId');
+};
+
+/**
  * Get category by id
  * @param {ObjectId} id
  * @returns {Promise<Category>}
@@ -177,8 +199,10 @@ const deleteCategoryById = async (categoryId) => {
 
 module.exports = {
   querySurveys,
+  getSurveyById,
   createSurvey,
   submitAnswers,
+  getSubmissionsForSurvey,
   getCategories,
   createCategory,
   updateCategoryById,

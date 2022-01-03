@@ -78,6 +78,12 @@ const deleteCategory = {
   }),
 };
 
+const getResults = {
+  params: Joi.object().keys({
+    surveyId: Joi.required().custom(objectId),
+  }),
+};
+
 module.exports = {
   getSurveys,
   createSurvey,
@@ -85,4 +91,5 @@ module.exports = {
   createCategory,
   updateCategory,
   deleteCategory,
+  getResults,
 };

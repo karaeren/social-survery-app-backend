@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
 const { surveyService } = require('../services');
+const ApiError = require('../utils/ApiError');
 
 const getSurveys = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'categoryId']);
@@ -45,6 +46,22 @@ const deleteCategory = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const getResults = catchAsync(async (req, res) => {
+  const survey = await surveyService.getSurveyById(req.params.surveyId, true);
+  if (!survey) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Survey not found');
+  }
+
+  const submissions = await surveyService.getSubmissionsForSurvey(survey._id);
+
+  res.send({
+    results: {
+      survey: survey,
+      submissions: submissions,
+    },
+  });
+});
+
 module.exports = {
   getSurveys,
   createSurvey,
@@ -53,4 +70,5 @@ module.exports = {
   createCategory,
   updateCategory,
   deleteCategory,
+  getResults,
 };
