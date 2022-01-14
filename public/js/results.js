@@ -108,6 +108,7 @@ function calculateAnswers() {
   }
 }
 
+let answerChart;
 function changeQuestion(questionNumber) {
   const question = responseData.results.survey.questions[questionNumber - 1];
 
@@ -125,15 +126,23 @@ function changeQuestion(questionNumber) {
     answerSeries.push(temp ? temp.count : 0);
   }
 
-  const options = {
-    chart: {
-      type: 'bar',
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
+  if (!answerChart) {
+    answerChart = new ApexCharts(document.querySelector('#answer-chart'), {
+      chart: {
+        type: 'bar',
       },
-    },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+        },
+      },
+      series: [],
+      xaxis: {},
+    });
+    answerChart.render();
+  }
+
+  answerChart.updateOptions({
     series: [
       {
         data: answerSeries,
@@ -142,14 +151,7 @@ function changeQuestion(questionNumber) {
     xaxis: {
       categories: answerCategories,
     },
-  };
-
-  const chart = new ApexCharts(
-    document.querySelector('#answer-chart'),
-    options
-  );
-
-  chart.render();
+  });
 }
 
 function generateAgeHeatmapSeries(questionNumber, answers) {
@@ -194,7 +196,7 @@ function generateGenderHeatmapSeries(questionNumber, answers) {
       let _ans =
         responseMap['question_' + questionNumber]['answer_' + answer.answer_id];
       if (_ans) _ans = _ans.genders[group];
-      
+
       if (!_ans) _ans = 0;
 
       data.push({
@@ -212,58 +214,58 @@ function generateGenderHeatmapSeries(questionNumber, answers) {
   return series;
 }
 
-// customViewNumber; 1 = age heatmap, 2 = gender heatmap, 3 = location heatmap
+let chart1, chart2;
+
 function updateCustomViews() {
-  document.querySelector('#custom-view-chart1').innerHTML = '';
-  document.querySelector('#custom-view-chart2').innerHTML = '';
+  /* document.querySelector('#custom-view-chart1').innerHTML = '';
+  document.querySelector('#custom-view-chart2').innerHTML = ''; */
 
   const questionNumber = questionSelect.value;
 
-  let options1 = {
-    chart: {
-      type: 'heatmap',
-      height: 256,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    title: {
-      text: 'Age Groups Heatmap Chart',
-    },
-  };
   let series1 = generateAgeHeatmapSeries(
     questionNumber,
     responseData.results.survey.questions[questionNumber - 1].answers
   );
-  options1.series = series1;
-  const chart1 = new ApexCharts(
-    document.querySelector('#custom-view-chart1'),
-    options1
-  );
-  chart1.render();
-
-  let options2 = {
-    chart: {
-      type: 'heatmap',
-      height: 256,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    title: {
-      text: 'Gender Groups Heatmap Chart',
-    },
-  };
   let series2 = generateGenderHeatmapSeries(
     questionNumber,
     responseData.results.survey.questions[questionNumber - 1].answers
   );
-  options2.series = series2;
-  const chart2 = new ApexCharts(
-    document.querySelector('#custom-view-chart2'),
-    options2
-  );
-  chart2.render();
+
+  if (!chart1) {
+    chart1 = new ApexCharts(document.querySelector('#custom-view-chart1'), {
+      chart: {
+        type: 'heatmap',
+        height: 256,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      title: {
+        text: 'Age Groups Heatmap Chart',
+      },
+      series: [],
+    });
+    chart1.render();
+  }
+  chart1.updateSeries(series1);
+
+  if (!chart2) {
+    chart2 = new ApexCharts(document.querySelector('#custom-view-chart2'), {
+      chart: {
+        type: 'heatmap',
+        height: 256,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      title: {
+        text: 'Age Gender Heatmap Chart',
+      },
+      series: [],
+    });
+    chart2.render();
+  }
+  chart2.updateSeries(series2);
 
   createMapData();
 }
