@@ -120,10 +120,9 @@ function changeQuestion(questionNumber) {
 
   for (const answer of question.answers) {
     answerCategories.push(answer.answer_text);
-    answerSeries.push(
-      responseMap['question_' + questionNumber]['answer_' + answer.answer_id]
-        .count
-    );
+    const temp =
+      responseMap['question_' + questionNumber]['answer_' + answer.answer_id];
+    answerSeries.push(temp ? temp.count : 0);
   }
 
   const options = {
@@ -160,10 +159,15 @@ function generateAgeHeatmapSeries(questionNumber, answers) {
     let data = [];
     for (const answer of answers) {
       let y = 0;
-      for (const _y of responseMap['question_' + questionNumber][
-        'answer_' + answer.answer_id
-      ].ages) {
-        if (_y.text == group.text) y = _y.count;
+      const questionAnswerN =
+        responseMap['question_' + questionNumber]['answer_' + answer.answer_id];
+
+      if (questionAnswerN) {
+        for (const _y of responseMap['question_' + questionNumber][
+          'answer_' + answer.answer_id
+        ].ages) {
+          if (_y.text == group.text) y = _y.count;
+        }
       }
 
       data.push({
@@ -188,8 +192,9 @@ function generateGenderHeatmapSeries(questionNumber, answers) {
     let data = [];
     for (const answer of answers) {
       let _ans =
-        responseMap['question_' + questionNumber]['answer_' + answer.answer_id]
-          .genders[group];
+        responseMap['question_' + questionNumber]['answer_' + answer.answer_id];
+      if (_ans) _ans = _ans.genders[group];
+      
       if (!_ans) _ans = 0;
 
       data.push({
@@ -315,8 +320,7 @@ function createMapData() {
   const questionNumber = questionSelect.value;
   const newGeoData = createGeoData(questionNumber);
 
-  if(geojson)
-    map.removeLayer(geojson);
+  if (geojson) map.removeLayer(geojson);
 
   geojson = L.geoJson(newGeoData, {
     style: style,
