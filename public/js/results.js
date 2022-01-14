@@ -277,8 +277,7 @@ function createGeoData(questionNumber) {
 
     for (const answer of Object.keys(question)) {
       for (const loc of question[answer].locations) {
-        var pt = turf.point([loc.long, loc.lat]);
-        if (turf.booleanPointInPolygon(pt, feature)) {
+        if (d3.geoContains(feature, [loc.long, loc.lat])) {
           if (!Object.keys(feature.properties.answers).includes(answer))
             feature.properties.answers[answer] = 0;
 
