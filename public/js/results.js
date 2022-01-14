@@ -57,7 +57,7 @@ async function main() {
     } catch (error) {
       alert(error);
       console.error(error);
-      console.error(e.stack);
+      console.error(error.stack);
     }
   } else {
     alert('Error, surveyId not found!');
