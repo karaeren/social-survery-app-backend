@@ -56,6 +56,8 @@ async function main() {
       updateCustomViews();
     } catch (error) {
       alert(error);
+      console.error(error);
+      console.error(e.stack);
     }
   } else {
     alert('Error, surveyId not found!');
