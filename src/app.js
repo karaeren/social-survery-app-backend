@@ -22,7 +22,16 @@ if (config.env !== 'test') {
 }
 
 // set security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        'img-src': ["'self'", 'https: data:'],
+      },
+    },
+  })
+);
 
 // parse json request body
 app.use(express.json());
