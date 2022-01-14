@@ -289,6 +289,7 @@ function createGeoData(questionNumber) {
     for (const key of Object.keys(feature.properties.answers)) {
       if (feature.properties.answers[key] > highest) {
         feature.properties.data = key;
+        highest = feature.properties.answers[key];
         if (!Object.keys(mapColors).includes(key))
           mapColors[key] = Object.keys(mapColors).length + 1;
       }
