@@ -2,6 +2,7 @@ version: '3'
 
 services:
   node-app:
+    restart: always
     build: .
     image: node-app
     environment:
@@ -16,6 +17,7 @@ services:
       - node-network
 
   mongodb:
+    restart: always
     image: mongo:4.2.1-bionic
     ports:
       - '27017:27017'
