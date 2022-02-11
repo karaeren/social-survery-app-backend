@@ -1,5 +1,7 @@
 {
   "main": "src/index.js",
+  "name": "Social Survey App Backend",
+  "version": "1.8.0",
   "prettier": {
     "singleQuote": true,
     "useTabs": false
