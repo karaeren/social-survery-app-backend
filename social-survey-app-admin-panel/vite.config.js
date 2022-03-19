@@ -13,5 +13,7 @@ export default defineConfig({
   },
   build: {
     outDir: '../public/admin',
+    emptyOutDir: true,
   },
+  base: '/admin/',
 });
