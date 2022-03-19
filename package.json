@@ -1,6 +1,6 @@
 {
   "main": "src/index.js",
-  "name": "Social Survey App Backend",
+  "name": "social-survey-app-backend",
   "version": "1.8.0",
   "prettier": {
     "singleQuote": true,
