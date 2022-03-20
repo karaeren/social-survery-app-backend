@@ -1,1 +1,0 @@
-import{u as t}from"./index.6568d9db.js";import{c as a,e as c,n as r,p as n}from"./vendor.8979cdfa.js";const s=n("Home page "),_={setup(u){const e=t();function o(){e.resetLocalStorage(),location.reload()}return(l,p)=>(a(),c("main",null,[s,r("a",{href:"#",onClick:o},"Logout")]))}};export{_ as default};
