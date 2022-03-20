@@ -6,13 +6,15 @@
       </el-icon>
     </div>
 
-    <RouterView />
+    <RouterView v-if="!loggedIn" />
+    <MainView v-else />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter, RouterView } from 'vue-router';
+import { ref, onMounted, watch } from 'vue';
+import { useRoute, useRouter, RouterView } from 'vue-router';
+import MainView from './components/MainView.vue';
 
 import { useAccountStore } from '@/stores/account';
 import { useAuthApi } from '@/composables/api/auth';
@@ -27,9 +29,19 @@ const { getUser } = useUserApi(); // user api
 
 // Data
 const showLoader = ref(true);
+const loggedIn = ref(false);
 
-//const route = useRoute();
+const route = useRoute();
 const router = useRouter();
+
+watch(
+  () => route.name,
+  async (newRoute) => {
+    if (newRoute === 'login' && loggedIn.value) {
+      router.push('/');
+    }
+  }
+);
 
 onMounted(async () => {
   accountStore.getFromLocalStorage();
@@ -69,6 +81,8 @@ onMounted(async () => {
       accountStore.setTokens(refreshedTokens);
       accountStore.setUser(userData);
       showLoader.value = false;
+      loggedIn.value = true;
+      return router.push('/');
     } else {
       ElMessageBox.alert('User does not have required privileges!', 'Error', {
         confirmButtonText: 'OK',
