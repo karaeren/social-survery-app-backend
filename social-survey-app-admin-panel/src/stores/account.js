@@ -17,6 +17,7 @@ export const useAccountStore = defineStore({
       name: '',
       role: '',
     },
+    loggedIn: false,
   }),
   getters: {
     /* doubleCount: (state) => state.counter * 2, */

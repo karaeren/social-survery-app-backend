@@ -3,10 +3,10 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>Welcome!</span>
+          <span>List Surveys</span>
         </div>
       </template>
-      You can use the sidebar to navigate through the admin dashboard.
+      todo
     </el-card>
   </div>
 </template>

@@ -57,6 +57,7 @@ async function onSubmit() {
   if (data && data.user && data.user.role === 'admin') {
     accountStore.setTokens(data.tokens);
     accountStore.setUser(data.user);
+    accountStore.loggedIn = true;
     router.push('/');
   } else {
     ElMessageBox.alert('User does not have required privileges!', 'Error', {

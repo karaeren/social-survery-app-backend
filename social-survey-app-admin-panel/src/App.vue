@@ -6,7 +6,7 @@
       </el-icon>
     </div>
 
-    <RouterView v-if="!loggedIn" />
+    <RouterView v-if="!accountStore.loggedIn" />
     <MainView v-else />
   </div>
 </template>
@@ -29,7 +29,6 @@ const { getUser } = useUserApi(); // user api
 
 // Data
 const showLoader = ref(true);
-const loggedIn = ref(false);
 
 const route = useRoute();
 const router = useRouter();
@@ -37,7 +36,7 @@ const router = useRouter();
 watch(
   () => route.name,
   async (newRoute) => {
-    if (newRoute === 'login' && loggedIn.value) {
+    if (newRoute === 'login' && accountStore.loggedIn) {
       router.push('/');
     }
   }
@@ -81,7 +80,7 @@ onMounted(async () => {
       accountStore.setTokens(refreshedTokens);
       accountStore.setUser(userData);
       showLoader.value = false;
-      loggedIn.value = true;
+      accountStore.loggedIn = true;
       return router.push('/');
     } else {
       ElMessageBox.alert('User does not have required privileges!', 'Error', {
@@ -102,6 +101,7 @@ onMounted(async () => {
 <style>
 body {
   margin: 0;
+  background-color: rgb(238, 241, 246);
 }
 .page-loader {
   z-index: 100000;
