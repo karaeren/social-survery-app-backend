@@ -2,19 +2,13 @@
   <main>Home page <a href="#" @click="logout">Logout</a></main>
 </template>
 
-<script>
+<script setup>
 import { useAccountStore } from '@/stores/account';
-import { mapStores } from 'pinia';
 
-export default {
-  computed: {
-    ...mapStores(useAccountStore),
-  },
-  methods: {
-    logout() {
-      this.accountStore.resetLocalStorage();
-      location.reload();
-    },
-  },
-};
+const accountStore = useAccountStore(); // account store
+
+function logout() {
+  accountStore.resetLocalStorage();
+  location.reload();
+}
 </script>

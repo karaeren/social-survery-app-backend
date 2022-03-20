@@ -10,80 +10,78 @@
   </div>
 </template>
 
-<script>
-import { RouterView } from 'vue-router';
-import { ElMessageBox } from 'element-plus';
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter, RouterView } from 'vue-router';
 
 import { useAccountStore } from '@/stores/account';
-import { mapStores } from 'pinia';
-import accountMixin from '@/mixins/account';
+import { useAuthApi } from '@/composables/api/auth';
+import { useUserApi } from '@/composables/api/user';
 
-export default {
-  components: {
-    RouterView,
-  },
-  mixins: [accountMixin],
-  computed: {
-    ...mapStores(useAccountStore),
-  },
-  data() {
-    return { showLoader: true };
-  },
-  async mounted() {
-    this.accountStore.getFromLocalStorage();
+import { ElMessageBox } from 'element-plus';
 
-    if (this.accountStore.refresh.token && this.accountStore.user.id) {
-      let refreshedTokens;
-      try {
-        refreshedTokens = await this.refreshTokens(
-          this.accountStore.refresh.token
-        );
-      } catch (e) {
-        console.error(e);
-        ElMessageBox.alert('Please login again.', 'Session expired', {
-          confirmButtonText: 'OK',
-        });
+const accountStore = useAccountStore(); // account store
+const { refreshTokens } = useAuthApi(); // auth api
+const { getUser } = useUserApi(); // user api
 
-        this.accountStore.resetLocalStorage();
-        this.showLoader = false;
-        return this.$router.push('login');
-      }
-      let userData;
-      try {
-        userData = await this.getUser(
-          refreshedTokens.access.token,
-          this.accountStore.user.id
-        );
-      } catch (e) {
-        console.error(e);
-        ElMessageBox.alert('Please login again.', 'Unknwon error', {
-          confirmButtonText: 'OK',
-        });
+// Data
+const showLoader = ref(true);
 
-        this.accountStore.resetLocalStorage();
-        this.showLoader = false;
-        return this.$router.push('login');
-      }
+//const route = useRoute();
+const router = useRouter();
 
-      if (userData && userData.role === 'admin') {
-        this.accountStore.setTokens(refreshedTokens);
-        this.accountStore.setUser(userData);
-        this.showLoader = false;
-      } else {
-        ElMessageBox.alert('User does not have required privileges!', 'Error', {
-          confirmButtonText: 'OK',
-        });
+onMounted(async () => {
+  accountStore.getFromLocalStorage();
 
-        this.accountStore.resetLocalStorage();
-        this.showLoader = false;
-        return this.$router.push('login');
-      }
-    } else {
-      this.$router.push('login');
-      this.showLoader = false;
+  if (accountStore.refresh.token && accountStore.user.id) {
+    let refreshedTokens;
+    try {
+      refreshedTokens = await refreshTokens(accountStore.refresh.token);
+    } catch (e) {
+      console.error(e);
+      ElMessageBox.alert('Please login again.', 'Session expired', {
+        confirmButtonText: 'OK',
+      });
+
+      accountStore.resetLocalStorage();
+      showLoader.value = false;
+      return router.push('login');
     }
-  },
-};
+    let userData;
+    try {
+      userData = await getUser(
+        refreshedTokens.access.token,
+        accountStore.user.id
+      );
+    } catch (e) {
+      console.error(e);
+      ElMessageBox.alert('Please login again.', 'Unknwon error', {
+        confirmButtonText: 'OK',
+      });
+
+      accountStore.resetLocalStorage();
+      showLoader.value = false;
+      return router.push('login');
+    }
+
+    if (userData && userData.role === 'admin') {
+      accountStore.setTokens(refreshedTokens);
+      accountStore.setUser(userData);
+      showLoader.value = false;
+    } else {
+      ElMessageBox.alert('User does not have required privileges!', 'Error', {
+        confirmButtonText: 'OK',
+      });
+
+      accountStore.resetLocalStorage();
+      showLoader.value = false;
+      return router.push('login');
+    }
+  } else {
+    router.push('login');
+    showLoader.value = false;
+  }
+});
 </script>
 
 <style>

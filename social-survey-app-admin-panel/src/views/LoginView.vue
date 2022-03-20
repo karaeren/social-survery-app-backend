@@ -1,5 +1,3 @@
-<script></script>
-
 <template>
   <div class="common-layout">
     <el-container>
@@ -8,13 +6,13 @@
         <el-card class="box-card">
           <el-form class="demo-form-inline" label-width="80px">
             <el-form-item label="E-mail">
-              <el-input v-model="user" />
+              <el-input v-model="email" />
             </el-form-item>
             <el-form-item label="Password">
               <el-input v-model="password" type="password" show-password />
             </el-form-item>
             <el-form-item style="margin-bottom: 0">
-              <el-button type="primary" @click="this.onSubmit">Login</el-button>
+              <el-button type="primary" @click="onSubmit">Login</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -23,56 +21,49 @@
   </div>
 </template>
 
-<script>
-import { ElMessageBox } from 'element-plus';
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import { useAccountStore } from '@/stores/account';
-import { mapStores } from 'pinia';
+import { useAuthApi } from '@/composables/api/auth';
 
-export default {
-  data() {
-    return {
-      user: '',
-      password: '',
-    };
-  },
-  computed: {
-    ...mapStores(useAccountStore),
-  },
-  methods: {
-    async onSubmit() {
-      let data;
-      try {
-        const response = await this.axios.post(
-          'https://socialsurveyapp.software/api/v1/auth/login',
-          {
-            email: this.user,
-            password: this.password,
-          }
-        );
-        data = response.data;
-      } catch (e) {
-        let errorText = 'Unknown error...';
-        if (e.response.data && e.response.data.message)
-          errorText = e.response.data.message;
-        ElMessageBox.alert(errorText, 'Error', {
-          confirmButtonText: 'OK',
-        });
+import { ElMessageBox } from 'element-plus';
 
-        return;
-      }
+const accountStore = useAccountStore(); // account store
+const { login } = useAuthApi(); // account api composable
 
-      if (data && data.user && data.user.role === 'admin') {
-        this.accountStore.setTokens(data.tokens);
-        this.accountStore.setUser(data.user);
-        this.$router.push('/');
-      } else {
-        ElMessageBox.alert('User does not have required privileges!', 'Error', {
-          confirmButtonText: 'OK',
-        });
-      }
-    },
-  },
-};
+// Data
+const email = ref('');
+const password = ref('');
+
+const router = useRouter();
+
+async function onSubmit() {
+  let data;
+  try {
+    data = await login(email.value, password.value);
+  } catch (e) {
+    let errorText = 'Unknown error...';
+    if (e.response.data && e.response.data.message)
+      errorText = e.response.data.message;
+    ElMessageBox.alert(errorText, 'Error', {
+      confirmButtonText: 'OK',
+    });
+
+    return;
+  }
+
+  if (data && data.user && data.user.role === 'admin') {
+    accountStore.setTokens(data.tokens);
+    accountStore.setUser(data.user);
+    router.push('/');
+  } else {
+    ElMessageBox.alert('User does not have required privileges!', 'Error', {
+      confirmButtonText: 'OK',
+    });
+  }
+}
 </script>
 
 <style>
