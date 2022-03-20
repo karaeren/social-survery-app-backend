@@ -51,7 +51,7 @@ async function main() {
 
       changeQuestion(1);
 
-      geoData = await getData('/api/static/json/tr-cities.json');
+      geoData = await getData('/json/tr-cities.json');
       createMap();
       updateCustomViews();
     } catch (error) {
