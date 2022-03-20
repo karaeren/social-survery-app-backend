@@ -19,6 +19,7 @@ import { useAuthApi } from '@/composables/api/auth';
 import { useUserApi } from '@/composables/api/user';
 
 import { ElMessageBox } from 'element-plus';
+import { Loading } from '@element-plus/icons-vue';
 
 const accountStore = useAccountStore(); // account store
 const { refreshTokens } = useAuthApi(); // auth api
