@@ -5,9 +5,8 @@
         <el-scrollbar>
           <el-menu
             :default-openeds="['surveys', 'surveys-categories', 'users']"
-            :default-active="activeItem"
             style="min-height: 100vh"
-            router="true"
+            :router="true"
           >
             <router-link to="/">
               <div class="logo">Social Survey App</div>

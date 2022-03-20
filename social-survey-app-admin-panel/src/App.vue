@@ -81,7 +81,8 @@ onMounted(async () => {
       accountStore.setUser(userData);
       showLoader.value = false;
       accountStore.loggedIn = true;
-      return router.push('/');
+      if (route.name === 'login') router.push('/');
+      return;
     } else {
       ElMessageBox.alert('User does not have required privileges!', 'Error', {
         confirmButtonText: 'OK',
