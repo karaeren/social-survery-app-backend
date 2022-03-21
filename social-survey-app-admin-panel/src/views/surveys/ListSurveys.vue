@@ -17,7 +17,7 @@
         width="240"
       />
       <el-table-column prop="id" label="ID" sortable width="360" />
-      <el-table-column fixed="right" align="right">
+      <el-table-column fixed="right" align="right" min-width="240">
         <template #header>
           <el-input
             v-model="search"
@@ -33,24 +33,67 @@
           >
             Results
           </el-button>
-          <el-button type="primary" size="small">Edit</el-button>
-          <el-button type="danger" size="small">Delete</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="updateSurveyDialog(table.row.id)"
+          >
+            Edit
+          </el-button>
+          <el-button
+            type="danger"
+            size="small"
+            @click="deleteSurveyById(table.row.id)"
+          >
+            Delete
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
+
+  <el-dialog v-model="updateDialogVisible" title="Update Survey">
+    <el-form :model="form">
+      <el-form-item label="Name" label-width="140px">
+        <el-input v-model="form.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="Description" label-width="140px">
+        <el-input v-model="form.description" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="Category" label-width="140px">
+        <el-select
+          v-model="form.category"
+          placeholder="Please select a category"
+        >
+          <el-option
+            v-for="cat in categoryFilterables"
+            :key="cat.id"
+            :label="cat.value"
+            :value="cat.id"
+          />
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="updateDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="updateSurveyById"> Update </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 
 import { useAccountStore } from '@/stores/account';
 import { useSurveyApi } from '@/composables/api/survey';
 
-import { ElMessageBox } from 'element-plus';
+import { ElMessageBox, ElMessage } from 'element-plus';
 
 const accountStore = useAccountStore(); // account store
-const { getSurveys, getCategories } = useSurveyApi(); // survey api
+const { getSurveys, updateSurvey, deleteSurvey, getCategories } =
+  useSurveyApi(); // survey api
 
 const categoryData = ref([]);
 const categoryFilterables = ref([]);
@@ -63,6 +106,14 @@ const filteredTableData = computed(() =>
       data.name.toLowerCase().includes(search.value.toLowerCase())
   )
 );
+
+const updateDialogVisible = ref(false);
+const form = reactive({
+  id: '',
+  name: '',
+  description: '',
+  category: '',
+});
 
 onMounted(async () => {
   if (!accountStore.access.token) return;
@@ -81,9 +132,18 @@ onMounted(async () => {
   }
 
   for await (const cat of categoryData.value) {
-    categoryFilterables.value.push({ text: cat.name, value: cat.name });
+    categoryFilterables.value.push({
+      id: cat.id,
+      text: cat.name,
+      value: cat.name,
+    });
   }
 
+  await updateSurveyList();
+});
+
+async function updateSurveyList() {
+  tableData.value = []; // reset table data
   let surveyData;
   try {
     surveyData = await getSurveys(accountStore.access.token);
@@ -98,7 +158,7 @@ onMounted(async () => {
     );
   }
   await generateTableData(surveyData);
-});
+}
 
 async function generateTableData(data) {
   for await (const res of data.results) {
@@ -125,6 +185,83 @@ function openResults(id) {
     '_blank'
   );
 }
+
+function updateSurveyDialog(id) {
+  for (const item of tableData.value) {
+    if (item.id === id) {
+      form.id = id;
+      form.name = item.name;
+      form.description = item.description;
+      form.category = item.categoryId;
+      updateDialogVisible.value = true;
+      return;
+    }
+  }
+}
+
+async function updateSurveyById() {
+  try {
+    await updateSurvey(
+      accountStore.access.token,
+      form.id,
+      form.name,
+      form.description,
+      form.category
+    );
+    ElMessage({
+      type: 'success',
+      message: 'Survey updated',
+    });
+    await updateSurveyList();
+    updateDialogVisible.value = false;
+  } catch (e) {
+    console.error(e);
+    return ElMessageBox.alert(
+      "Couldn't update survey, an unknown error happened...",
+      'Error',
+      {
+        confirmButtonText: 'OK',
+      }
+    );
+  }
+}
+
+function deleteSurveyById(id) {
+  ElMessageBox.confirm(
+    'Are you sure you want to delete this survey? This is irreversible!',
+    'Warning',
+    {
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+    }
+  )
+    .then(async () => {
+      try {
+        await deleteSurvey(accountStore.access.token, id);
+        ElMessage({
+          type: 'success',
+          message: 'Delete completed',
+        });
+        await updateSurveyList();
+      } catch (e) {
+        console.error(e);
+        return ElMessageBox.alert(
+          "Couldn't delete survey, an unknown error happened...",
+          'Error',
+          {
+            confirmButtonText: 'OK',
+          }
+        );
+      }
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Delete canceled',
+      });
+    });
+}
 </script>
 
 <style>
@@ -135,6 +272,6 @@ function openResults(id) {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
+  width: calc(100% - 64px);
 }
 </style>
