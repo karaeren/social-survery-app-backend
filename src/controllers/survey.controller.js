@@ -17,6 +17,19 @@ const createSurvey = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send({ survey });
 });
 
+const updateSurvey = catchAsync(async (req, res) => {
+  const survey = await surveyService.updateSurveyById(
+    req.params.surveyId,
+    req.body
+  );
+  res.send(survey);
+});
+
+const deleteSurvey = catchAsync(async (req, res) => {
+  await surveyService.deleteSurveyById(req.params.surveyId);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 const submitAnswers = catchAsync(async (req, res) => {
   await surveyService.submitAnswers(req.user, req.body);
   res.status(httpStatus.NO_CONTENT).send();
@@ -65,6 +78,8 @@ const getResults = catchAsync(async (req, res) => {
 module.exports = {
   getSurveys,
   createSurvey,
+  updateSurvey,
+  deleteSurvey,
   submitAnswers,
   getCategories,
   createCategory,

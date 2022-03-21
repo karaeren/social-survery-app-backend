@@ -20,6 +20,19 @@ router
     surveyController.createSurvey
   );
 
+router
+  .route('/:surveyId')
+  .patch(
+    auth('manageSurveys'),
+    validate(surveyValidation.updateSurvey),
+    surveyController.updateSurvey
+  )
+  .delete(
+    auth('manageSurveys'),
+    validate(surveyValidation.deleteSurvey),
+    surveyController.deleteSurvey
+  );
+
 // "/survey/submit"
 router
   .route('/submit')

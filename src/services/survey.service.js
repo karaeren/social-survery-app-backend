@@ -43,6 +43,42 @@ const createSurvey = async (surveyBody) => {
 };
 
 /**
+ * Update survey by id
+ * @param {ObjectId} surveyId
+ * @param {Object} updateBody
+ * @returns {Promise<Survey>}
+ */
+const updateSurveyById = async (surveyId, updateBody) => {
+  const survey = await getSurveyById(surveyId);
+  if (!survey) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Survey not found');
+  }
+  if (
+    updateBody.categoryId &&
+    !(await Category.findOne({ _id: updateBody.categoryId }))
+  ) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Category is not valid');
+  }
+  Object.assign(survey, updateBody);
+  await survey.save();
+  return survey;
+};
+
+/**
+ * Delete survey by id
+ * @param {ObjectId} surveyId
+ * @returns {Promise<Survey>}
+ */
+const deleteSurveyById = async (surveyId) => {
+  const survey = await getSurveyById(surveyId);
+  if (!survey) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Survey not found');
+  }
+  await survey.remove();
+  return survey;
+};
+
+/**
  * Compare users answers to survey's question and answer list and validate
  * @param {Array} questions
  * @param {Array} userAnswers
@@ -201,6 +237,8 @@ module.exports = {
   querySurveys,
   getSurveyById,
   createSurvey,
+  updateSurveyById,
+  deleteSurveyById,
   submitAnswers,
   getSubmissionsForSurvey,
   getCategories,

@@ -32,6 +32,25 @@ const createSurvey = {
   }),
 };
 
+const updateSurvey = {
+  params: Joi.object().keys({
+    surveyId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      name: Joi.string(),
+      description: Joi.string(),
+      categoryId: Joi.custom(objectId),
+    })
+    .min(1),
+};
+
+const deleteSurvey = {
+  params: Joi.object().keys({
+    surveyId: Joi.string().custom(objectId),
+  }),
+};
+
 const submitAnswers = {
   body: Joi.object().keys({
     surveyId: Joi.custom(objectId).required(),
@@ -87,6 +106,8 @@ const getResults = {
 module.exports = {
   getSurveys,
   createSurvey,
+  updateSurvey,
+  deleteSurvey,
   submitAnswers,
   createCategory,
   updateCategory,
