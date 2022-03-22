@@ -21,6 +21,14 @@ router
   );
 
 router
+  .route('/getById')
+  .post(
+    auth(),
+    validate(surveyValidation.getSurveysById),
+    surveyController.getSurveysById
+  );
+
+router
   .route('/:surveyId')
   .patch(
     auth('manageSurveys'),

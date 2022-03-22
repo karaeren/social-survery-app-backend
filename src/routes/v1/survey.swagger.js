@@ -136,6 +136,56 @@
 
 /**
  * @swagger
+ * /survey/getById:
+ *   post:
+ *     summary: Get surveys by id (1-25)
+ *     description: Users can query surveys by ids (min 1, max 25)
+ *     tags: [Survey]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *             example:
+ *               id: ["61c21efb7dd2d812a3759557", "61c21efb7dd2d812a37595af"]
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Survey'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 1
+ *                 totalResults:
+ *                   type: integer
+ *                   example: 1
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+
+/**
+ * @swagger
  * /survey/{id}:
  *   patch:
  *     summary: Update a survey

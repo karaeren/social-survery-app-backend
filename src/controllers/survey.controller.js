@@ -11,6 +11,17 @@ const getSurveys = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getSurveysById = catchAsync(async (req, res) => {
+  const { id } = req.body;
+  const results = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const _id of id) {
+    const survey = await surveyService.getSurveyById(_id);
+    if (survey) results.push(survey);
+  }
+  res.send(results);
+});
+
 const createSurvey = catchAsync(async (req, res) => {
   const survey = await surveyService.createSurvey(req.body);
 
@@ -77,6 +88,7 @@ const getResults = catchAsync(async (req, res) => {
 
 module.exports = {
   getSurveys,
+  getSurveysById,
   createSurvey,
   updateSurvey,
   deleteSurvey,

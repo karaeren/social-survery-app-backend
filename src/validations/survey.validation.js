@@ -12,6 +12,17 @@ const getSurveys = {
   }),
 };
 
+const getSurveysById = {
+  body: Joi.object().keys({
+    id: Joi.array()
+      .unique()
+      .min(1)
+      .max(25)
+      .items(Joi.custom(objectId))
+      .required(),
+  }),
+};
+
 const createSurvey = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -105,6 +116,7 @@ const getResults = {
 
 module.exports = {
   getSurveys,
+  getSurveysById,
   createSurvey,
   updateSurvey,
   deleteSurvey,
