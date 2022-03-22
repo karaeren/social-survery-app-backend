@@ -263,15 +263,3 @@ function deleteSurveyById(id) {
     });
 }
 </script>
-
-<style>
-.main {
-  padding: 32px;
-}
-.centered-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: calc(100% - 64px);
-}
-</style>

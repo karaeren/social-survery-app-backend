@@ -29,6 +29,19 @@ export function useSurveyApi() {
     return data;
   }
 
+  async function createSurvey(accessToken, body) {
+    const response = await axios.post(
+      `https://socialsurveyapp.software/api/v1/survey`,
+      body,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    const data = response.data;
+    return data;
+  }
+
   async function updateSurvey(
     accessToken,
     surveyId,
@@ -76,5 +89,11 @@ export function useSurveyApi() {
     return data;
   }
 
-  return { getSurveys, updateSurvey, deleteSurvey, getCategories };
+  return {
+    getSurveys,
+    createSurvey,
+    updateSurvey,
+    deleteSurvey,
+    getCategories,
+  };
 }
