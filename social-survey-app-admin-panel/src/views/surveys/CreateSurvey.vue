@@ -287,13 +287,14 @@ async function createSurveyButton() {
     data = await createSurvey(accountStore.access.token, form);
   } catch (e) {
     console.error(e);
-    return ElMessageBox.alert(
-      'An unknown error happened while trying to create the survey...',
-      'Error',
-      {
-        confirmButtonText: 'OK',
-      }
-    );
+    let errorText =
+      'An unknown error happened while trying to create the survey...';
+    if (e.response && e.response.data.message)
+      errorText = e.response.data.message;
+
+    return ElMessageBox.alert(errorText, 'Error', {
+      confirmButtonText: 'OK',
+    });
   }
   console.log(data);
   ElMessageBox.alert('Survey created successfully.', 'Success!', {
