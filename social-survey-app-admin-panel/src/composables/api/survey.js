@@ -89,11 +89,59 @@ export function useSurveyApi() {
     return data;
   }
 
+  async function createCategory(accessToken, body) {
+    if (body.rank && body.rank === '0') delete body.rank;
+    else body.rank = parseInt(body.rank);
+
+    const response = await axios.post(
+      `https://socialsurveyapp.software/api/v1/survey/categories`,
+      body,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    const data = response.data;
+    return data;
+  }
+
+  async function updateCategory(accessToken, categoryId, name, color, rank) {
+    const response = await axios.patch(
+      `https://socialsurveyapp.software/api/v1/survey/categories/${categoryId}`,
+      {
+        ...(name && { name }),
+        ...(color && { color }),
+        ...(rank && { rank }),
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    const data = response.data;
+    return data;
+  }
+
+  async function deleteCategory(accessToken, categoryId) {
+    const response = await axios.delete(
+      `https://socialsurveyapp.software/api/v1/survey/categories/${categoryId}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    const data = response.data;
+    return data;
+  }
+
   return {
     getSurveys,
     createSurvey,
     updateSurvey,
     deleteSurvey,
     getCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory,
   };
 }
