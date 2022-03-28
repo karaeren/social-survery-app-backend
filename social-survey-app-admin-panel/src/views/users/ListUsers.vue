@@ -66,7 +66,6 @@ const search = ref('');
 onMounted(async () => {
   if (!accountStore.access.token) return;
   await updateUsersList();
-  console.log(usersData.value);
 });
 
 async function updateUsersList() {
