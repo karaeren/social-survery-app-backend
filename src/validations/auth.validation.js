@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 const { password } = require('./custom.validation');
 
 const register = {
@@ -6,6 +6,8 @@ const register = {
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
     name: Joi.string().required(),
+    birthdate: Joi.date().format('YYYY-MM-DD').utc().required(),
+    gender: Joi.string().valid('male', 'female', 'other').required(),
   }),
 };
 
