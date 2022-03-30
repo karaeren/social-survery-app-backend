@@ -37,6 +37,9 @@ const envVarsSchema = Joi.object()
     PROD_SWAGGER: Joi.bool().description(
       'Switch to show Swagger docs in production or not'
     ),
+    REQUIRE_EMAIL_VERIFICATION: Joi.bool().description(
+      'Switch to require email verification or not after user registration'
+    ),
   })
   .unknown();
 
@@ -86,4 +89,5 @@ module.exports = {
     from: envVars.EMAIL_FROM,
   },
   prodSwagger: envVars.PROD_SWAGGER,
+  requireEmailVerification: envVars.REQUIRE_EMAIL_VERIFICATION,
 };
