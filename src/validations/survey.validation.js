@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 const { objectId } = require('./custom.validation');
 
 const getSurveys = {
@@ -28,6 +28,7 @@ const createSurvey = {
     name: Joi.string().required(),
     description: Joi.string().required(),
     categoryId: Joi.custom(objectId).required(),
+    expireDate: Joi.date().format('YYYY-MM-DD').utc(),
     questions: Joi.array()
       .items({
         question_id: Joi.number().integer().required(),
@@ -52,6 +53,7 @@ const updateSurvey = {
       name: Joi.string(),
       description: Joi.string(),
       categoryId: Joi.custom(objectId),
+      expireDate: Joi.date().format('YYYY-MM-DD').utc(),
     })
     .min(1),
 };

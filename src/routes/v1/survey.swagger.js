@@ -98,12 +98,15 @@
  *                 type: string
  *               categoryId:
  *                 type: string
+ *               expireDate:
+ *                 type: string
  *               questions:
  *                 type: array
  *             example:
  *               name: "This is a survey title!"
  *               description: "This is an example description text..."
  *               categoryId: 61c21efb7dd2d812a3759557
+ *               expireDate: 2022-06-18
  *               questions: [
  *                 {
  *                   question_id: 1,
@@ -217,6 +220,7 @@
  *               name: "This is a survey title!"
  *               description: "This is an example description text..."
  *               categoryId: 61c21efb7dd2d812a3759557
+ *               expireDate: 2022-06-18
  *     responses:
  *       "201":
  *         description: OK

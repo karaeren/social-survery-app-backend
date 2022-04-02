@@ -15,6 +15,10 @@ const surveySchema = mongoose.Schema({
     ref: 'Category',
     required: true,
   },
+  expireDate: {
+    type: Date,
+    default: null,
+  },
   submissionCount: {
     type: Number,
     default: 0,

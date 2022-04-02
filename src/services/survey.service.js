@@ -135,6 +135,10 @@ const submitAnswers = async (user, submissionBody) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Survey is not valid');
   }
 
+  if (findSurvey.expireDate && new Date() - findSurvey.expireDate > 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Survey has expired');
+  }
+
   validateAnswers(findSurvey.questions, submissionBody.answers);
 
   const shadow = await Shadow.create({
