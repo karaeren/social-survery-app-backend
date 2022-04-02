@@ -53,7 +53,7 @@ const updateSurvey = {
       name: Joi.string(),
       description: Joi.string(),
       categoryId: Joi.custom(objectId),
-      expireDate: Joi.date().format('YYYY-MM-DD').utc(),
+      expireDate: Joi.date().format('YYYY-MM-DD').utc().allow(null),
     })
     .min(1),
 };
