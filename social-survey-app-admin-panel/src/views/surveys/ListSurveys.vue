@@ -5,6 +5,11 @@
       <el-table-column prop="description" label="Description" width="360" />
       <el-table-column prop="expireDate" label="Expire Date" width="240" />
       <el-table-column
+        prop="numFeatures"
+        label="Geographic Features"
+        width="240"
+      />
+      <el-table-column
         prop="submissionCount"
         label="Submission Count"
         width="240"
@@ -186,6 +191,8 @@ async function generateTableData(data) {
       expireDate: res.expireDate
         ? new Date(res.expireDate).toISOString().split('T')[0]
         : null,
+      numFeatures: res.geoFeatures ? res.geoFeatures.length : 0,
+      geoFeatures: res.geoFeatures,
       category: category.length ? category[0].name : 'Unknown Category',
       submissionCount: res.submissionCount,
     });

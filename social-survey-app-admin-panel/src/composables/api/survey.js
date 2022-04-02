@@ -18,6 +18,7 @@ export function useSurveyApi() {
           ...(searchForName && { searchForName }),
           ...(categoryId && { categoryId }),
           ...(sortBy && { sortBy }),
+          includeGeoSpecificSurveys: true,
           limit,
           page,
         },
