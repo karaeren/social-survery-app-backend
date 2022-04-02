@@ -21,6 +21,18 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="Expiration Date" label-width="140px">
+          <el-date-picker
+            v-model="form.expireDate"
+            type="date"
+            placeholder="Pick a day"
+            format="YYYY/MM/DD"
+            value-format="YYYY-MM-DD"
+          />
+          <el-button style="margin-left: 1em" @click="form.expireDate = null">
+            Remove Expiration
+          </el-button>
+        </el-form-item>
       </el-form>
 
       <div class="question-box-no" style="margin-bottom: 16px">
@@ -131,6 +143,7 @@ const form = reactive({
   name: '',
   description: '',
   categoryId: '',
+  expireDate: null,
   questions: [
     {
       question_id: 1,

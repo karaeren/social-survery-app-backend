@@ -3,6 +3,7 @@
     <el-table :data="filteredTableData" height="100vh" style="width: 100%">
       <el-table-column fixed prop="name" label="Name" sortable width="240" />
       <el-table-column prop="description" label="Description" width="360" />
+      <el-table-column prop="expireDate" label="Expire Date" width="240" />
       <el-table-column
         prop="submissionCount"
         label="Submission Count"
@@ -73,6 +74,18 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="Expiration Date" label-width="140px">
+        <el-date-picker
+          v-model="form.expireDate"
+          type="date"
+          placeholder="Pick a day"
+          format="YYYY/MM/DD"
+          value-format="YYYY-MM-DD"
+        />
+        <el-button style="margin-left: 1em" @click="form.expireDate = null">
+          Remove Expiration
+        </el-button>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -113,6 +126,7 @@ const form = reactive({
   name: '',
   description: '',
   category: '',
+  expireDate: null,
 });
 
 onMounted(async () => {
@@ -169,6 +183,9 @@ async function generateTableData(data) {
       name: res.name,
       description: res.description,
       categoryId: res.categoryId,
+      expireDate: res.expireDate
+        ? new Date(res.expireDate).toISOString().split('T')[0]
+        : null,
       category: category.length ? category[0].name : 'Unknown Category',
       submissionCount: res.submissionCount,
     });
@@ -193,6 +210,7 @@ function updateSurveyDialog(id) {
       form.name = item.name;
       form.description = item.description;
       form.category = item.categoryId;
+      form.expireDate = item.expireDate;
       updateDialogVisible.value = true;
       return;
     }
@@ -206,7 +224,8 @@ async function updateSurveyById() {
       form.id,
       form.name,
       form.description,
-      form.category
+      form.category,
+      form.expireDate
     );
     ElMessage({
       type: 'success',

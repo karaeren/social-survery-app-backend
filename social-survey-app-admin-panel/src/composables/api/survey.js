@@ -47,7 +47,8 @@ export function useSurveyApi() {
     surveyId,
     name,
     description,
-    categoryId
+    categoryId,
+    expireDate
   ) {
     const response = await axios.patch(
       `https://socialsurveyapp.software/api/v1/survey/${surveyId}`,
@@ -55,6 +56,7 @@ export function useSurveyApi() {
         ...(name && { name }),
         ...(description && { description }),
         ...(categoryId && { categoryId }),
+        expireDate,
       },
       {
         headers: { Authorization: `Bearer ${accessToken}` },
