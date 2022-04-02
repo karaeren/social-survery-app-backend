@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const { booleanPointInPolygon } = require('@turf/turf');
 const { Survey, Category, Submission, Shadow } = require('../models');
 const ApiError = require('../utils/ApiError');
 
@@ -137,6 +138,30 @@ const submitAnswers = async (user, submissionBody) => {
 
   if (findSurvey.expireDate && new Date() - findSurvey.expireDate > 0) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Survey has expired');
+  }
+
+  if (findSurvey.geoFeatures && findSurvey.geoFeatures.length > 0) {
+    let usersLocationIsValid = false;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const geoFeature of findSurvey.geoFeatures) {
+      if (
+        booleanPointInPolygon(
+          [submissionBody.location.long, submissionBody.location.lat],
+          geoFeature
+        )
+      ) {
+        usersLocationIsValid = true;
+        break;
+      }
+    }
+
+    if (!usersLocationIsValid) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Your location is not valid for this survey'
+      );
+    }
   }
 
   validateAnswers(findSurvey.questions, submissionBody.answers);
