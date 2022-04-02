@@ -12,6 +12,13 @@ const getSurveys = {
   }),
 };
 
+const getSurveysByLocation = {
+  query: Joi.object().keys({
+    lat: Joi.number().required(),
+    long: Joi.number().required(),
+  }),
+};
+
 const getSurveysById = {
   body: Joi.object().keys({
     id: Joi.array()
@@ -123,6 +130,7 @@ const getResults = {
 
 module.exports = {
   getSurveys,
+  getSurveysByLocation,
   getSurveysById,
   createSurvey,
   updateSurvey,

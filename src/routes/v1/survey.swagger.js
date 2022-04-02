@@ -139,6 +139,56 @@
 
 /**
  * @swagger
+ * /survey/getByLocation:
+ *   get:
+ *     summary: Get geo-specific surveys based on lat-long location.
+ *     description: Get geo-specific surveys based on lat-long location. Only returns valid surveys
+ *     tags: [Survey]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: lat
+ *         schema:
+ *           type: number
+ *         description: Latitude
+ *       - in: query
+ *         name: long
+ *         schema:
+ *           type: number
+ *         description: Longitude
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Survey'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 1
+ *                 totalResults:
+ *                   type: integer
+ *                   example: 1
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ */
+
+/**
+ * @swagger
  * /survey/getById:
  *   post:
  *     summary: Get surveys by id (1-25)

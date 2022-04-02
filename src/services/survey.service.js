@@ -15,7 +15,49 @@ const ApiError = require('../utils/ApiError');
  */
 const querySurveys = async (filter, options) => {
   const surveys = await Survey.paginate(filter, options);
-  return surveys;
+  const copy = JSON.parse(JSON.stringify(surveys));
+  // eslint-disable-next-line no-restricted-syntax
+  for (const res of copy.results) {
+    if (res.geoFeatures) delete res.geoFeatures;
+  }
+  return copy;
+};
+
+/**
+ * Get survey by location
+ * @param {number} lat
+ * @param {number} long
+ * @returns {Promise<Survey>}
+ */
+const getSurveysByLocation = async (lat, long) => {
+  const location = [long, lat];
+  const surveys = await Survey.find({
+    geoFeatures: { $exists: true, $not: { $size: 0 } },
+  });
+
+  const filteredSurveys = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const s of surveys) {
+    if (s.geoFeatures && s.geoFeatures.length > 0) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const feature of s.geoFeatures) {
+        const validLocation = booleanPointInPolygon(location, feature);
+        if (validLocation) {
+          const copy = JSON.parse(JSON.stringify(s));
+          delete copy.geoFeatures;
+          filteredSurveys.push(copy);
+          break;
+        }
+      }
+    }
+  }
+
+  if (filteredSurveys.length === 0) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+  }
+
+  return { results: filteredSurveys };
 };
 
 /**
@@ -264,6 +306,7 @@ const deleteCategoryById = async (categoryId) => {
 
 module.exports = {
   querySurveys,
+  getSurveysByLocation,
   getSurveyById,
   createSurvey,
   updateSurveyById,

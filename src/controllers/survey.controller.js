@@ -11,6 +11,14 @@ const getSurveys = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getSurveysByLocation = catchAsync(async (req, res) => {
+  const result = await surveyService.getSurveysByLocation(
+    req.query.lat,
+    req.query.long
+  );
+  res.send(result);
+});
+
 const getSurveysById = catchAsync(async (req, res) => {
   const { id } = req.body;
   const results = [];
@@ -88,6 +96,7 @@ const getResults = catchAsync(async (req, res) => {
 
 module.exports = {
   getSurveys,
+  getSurveysByLocation,
   getSurveysById,
   createSurvey,
   updateSurvey,

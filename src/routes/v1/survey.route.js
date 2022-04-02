@@ -21,6 +21,14 @@ router
   );
 
 router
+  .route('/getByLocation')
+  .get(
+    auth(),
+    validate(surveyValidation.getSurveysByLocation),
+    surveyController.getSurveysByLocation
+  );
+
+router
   .route('/getById')
   .post(
     auth(),
