@@ -41,6 +41,11 @@ const createSurvey = {
           .required(),
       })
       .required(),
+    geoFeatures: Joi.array().items({
+      name: Joi.string(),
+      type: Joi.string().required(),
+      coordinates: Joi.array().required(),
+    }),
   }),
 };
 

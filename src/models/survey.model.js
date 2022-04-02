@@ -27,6 +27,10 @@ const surveySchema = mongoose.Schema({
     type: Array,
     default: [],
   },
+  geoFeatures: {
+    type: [Object],
+    default: [],
+  },
 });
 
 // add plugin that converts mongoose to json
