@@ -15,12 +15,7 @@ const ApiError = require('../utils/ApiError');
  */
 const querySurveys = async (filter, options) => {
   const surveys = await Survey.paginate(filter, options);
-  const copy = JSON.parse(JSON.stringify(surveys));
-  // eslint-disable-next-line no-restricted-syntax
-  for (const res of copy.results) {
-    if (res.geoFeatures) delete res.geoFeatures;
-  }
-  return copy;
+  return surveys;
 };
 
 /**

@@ -6,6 +6,7 @@ const getSurveys = {
     name: Joi.string(),
     searchForName: Joi.bool().default(false),
     categoryId: Joi.custom(objectId),
+    includeGeoSpecificSurveys: Joi.boolean(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),

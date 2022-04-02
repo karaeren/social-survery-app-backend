@@ -7,7 +7,13 @@ const ApiError = require('../utils/ApiError');
 const getSurveys = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'categoryId']);
   const options = pick(req.query, ['searchForName', 'sortBy', 'limit', 'page']);
-  filter['geoFeatures.0'] = { $exists: false };
+
+  if (
+    typeof req.query.includeGeoSpecificSurveys === 'undefined' ||
+    req.query.includeGeoSpecificSurveys === false
+  ) {
+    filter['geoFeatures.0'] = { $exists: false };
+  }
 
   const result = await surveyService.querySurveys(filter, options);
   res.send(result);

@@ -31,6 +31,11 @@
  *           type: string
  *         description: categoryId (objectId)
  *       - in: query
+ *         name: includeGeoSpecificSurveys
+ *         schema:
+ *           type: boolean
+ *         description: Whether or not to include geo-specific surveys
+ *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
