@@ -2,13 +2,13 @@
   <div class="main centered-main">
     <el-scrollbar class="scrollbar-box">
       <el-form :model="form" label-position="left">
-        <el-form-item label="Name" label-width="140px">
+        <el-form-item label="Name" label-width="180px">
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="Description" label-width="140px">
+        <el-form-item label="Description" label-width="180px">
           <el-input v-model="form.description" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="Category" label-width="140px">
+        <el-form-item label="Category" label-width="180px">
           <el-select
             v-model="form.categoryId"
             placeholder="Please select a category"
@@ -21,7 +21,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Expiration Date" label-width="140px">
+        <el-form-item label="Expiration Date" label-width="180px">
           <el-date-picker
             v-model="form.expireDate"
             type="date"
@@ -31,6 +31,46 @@
           />
           <el-button style="margin-left: 1em" @click="form.expireDate = null">
             Remove Expiration
+          </el-button>
+        </el-form-item>
+        <el-form-item label="Geographic Constraints" label-width="180px">
+          <el-select
+            v-model="geoFeaturesList"
+            multiple
+            placeholder="Select"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="item in geoOptions"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+          <el-button
+            style="margin-left: 1em"
+            @click="showCustomGeoBox = !showCustomGeoBox"
+          >
+            Add Custom Geographic Constraint
+          </el-button>
+        </el-form-item>
+        <el-form-item
+          v-if="showCustomGeoBox"
+          label="Add Custom Constraint"
+          label-width="180px"
+        >
+          <el-input
+            v-model="customGeoForm.name"
+            placeholder="Custom constraint name"
+          />
+          <el-input
+            v-model="customGeoForm.geojson"
+            :rows="2"
+            type="textarea"
+            placeholder="GeoJSON"
+          />
+          <el-button @click="addCustomGeo">
+            Add Custom Geographic Constraint
           </el-button>
         </el-form-item>
       </el-form>
@@ -124,6 +164,9 @@ import { useSurveyApi } from '@/composables/api/survey';
 import { ElMessageBox } from 'element-plus';
 import { ArrowUpBold, ArrowDownBold, CloseBold } from '@element-plus/icons-vue';
 
+import geoFeaturesJson from '@/assets/json/geoFeatures.json';
+const customGeoFeatures = {};
+
 const accountStore = useAccountStore(); // account store
 const { getSurveys, createSurvey, getCategories } = useSurveyApi(); // survey api
 
@@ -139,11 +182,13 @@ const idList = {
   2: 3,
 };
 
+const geoFeaturesList = ref([]);
 const form = reactive({
   name: '',
   description: '',
   categoryId: '',
   expireDate: null,
+  geoFeatures: [],
   questions: [
     {
       question_id: 1,
@@ -174,6 +219,13 @@ const form = reactive({
       ],
     },
   ],
+});
+
+const geoOptions = Object.keys(geoFeaturesJson);
+const showCustomGeoBox = ref(false);
+const customGeoForm = reactive({
+  name: '',
+  geojson: '',
 });
 
 const swapArrayElements = (arr, indexA, indexB) => {
@@ -294,7 +346,53 @@ function addAnswer(questionIndex) {
   });
 }
 
+function addCustomGeo() {
+  if (!customGeoForm.name || !customGeoForm.geojson) {
+    return ElMessageBox.alert('Please fill all areas!', 'Error', {
+      confirmButtonText: 'OK',
+    });
+  }
+
+  let parsedInput = {};
+  try {
+    parsedInput.name = customGeoForm.name;
+
+    const parsedStr = JSON.parse(customGeoForm.geojson);
+    parsedInput.type = parsedStr.features[0].geometry.type;
+    parsedInput.coordinates = parsedStr.features[0].geometry.coordinates;
+  } catch (e) {
+    return ElMessageBox.alert(
+      'An error happened while trying to parse your input: ' + e.message,
+      'Error',
+      {
+        confirmButtonText: 'OK',
+      }
+    );
+  }
+
+  customGeoFeatures[customGeoForm.name] = parsedInput;
+
+  geoOptions.push(customGeoForm.name);
+  geoFeaturesList.value.push(customGeoForm.name);
+
+  customGeoForm.name = '';
+  customGeoForm.geojson = '';
+
+  showCustomGeoBox.value = false;
+}
+
 async function createSurveyButton() {
+  form.geoFeatures = [];
+
+  if (geoFeaturesList.value.length > 0) {
+    for (const geoItem of geoFeaturesList.value) {
+      if (Object.keys(geoFeaturesJson).includes(geoItem))
+        form.geoFeatures.push(geoFeaturesJson[geoItem]);
+      else if (Object.keys(customGeoFeatures).includes(geoItem))
+        form.geoFeatures.push(customGeoFeatures[geoItem]);
+    }
+  }
+
   let data;
   try {
     data = await createSurvey(accountStore.access.token, form);
@@ -310,6 +408,7 @@ async function createSurveyButton() {
     });
   }
   console.log(data);
+
   ElMessageBox.alert('Survey created successfully.', 'Success!', {
     confirmButtonText: 'OK',
     callback: () => {
