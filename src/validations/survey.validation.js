@@ -36,7 +36,7 @@ const createSurvey = {
     name: Joi.string().required(),
     description: Joi.string().required(),
     categoryId: Joi.custom(objectId).required(),
-    expireDate: Joi.date().format('YYYY-MM-DD').utc(),
+    expireDate: Joi.date().format('YYYY-MM-DD').utc().allow(null),
     questions: Joi.array()
       .items({
         question_id: Joi.number().integer().required(),
