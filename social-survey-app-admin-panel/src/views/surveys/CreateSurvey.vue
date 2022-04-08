@@ -59,6 +59,7 @@
           label="Add Custom Constraint"
           label-width="180px"
         >
+          <a href="https://geojson.io/" target="_blank"> geojson.io </a>
           <el-input
             v-model="customGeoForm.name"
             placeholder="Custom constraint name"
