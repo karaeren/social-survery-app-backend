@@ -60,13 +60,13 @@
 
   <el-dialog v-model="updateDialogVisible" title="Update Survey">
     <el-form :model="form">
-      <el-form-item label="Name" label-width="140px">
+      <el-form-item label="Name" label-width="180px">
         <el-input v-model="form.name" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="Description" label-width="140px">
+      <el-form-item label="Description" label-width="180px">
         <el-input v-model="form.description" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="Category" label-width="140px">
+      <el-form-item label="Category" label-width="180px">
         <el-select
           v-model="form.category"
           placeholder="Please select a category"
@@ -79,7 +79,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Expiration Date" label-width="140px">
+      <el-form-item label="Expiration Date" label-width="180px">
         <el-date-picker
           v-model="form.expireDate"
           type="date"
@@ -89,6 +89,47 @@
         />
         <el-button style="margin-left: 1em" @click="form.expireDate = null">
           Remove Expiration
+        </el-button>
+      </el-form-item>
+      <el-form-item label="Geographic Constraints" label-width="180px">
+        <el-select
+          v-model="geoFeaturesList"
+          multiple
+          placeholder="Select"
+          style="width: 240px"
+        >
+          <el-option
+            v-for="item in geoOptions"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+        <el-button
+          style="margin-left: 1em"
+          @click="showCustomGeoBox = !showCustomGeoBox"
+        >
+          Add Custom Geographic Constraint
+        </el-button>
+      </el-form-item>
+      <el-form-item
+        v-if="showCustomGeoBox"
+        label="Add Custom Constraint"
+        label-width="180px"
+      >
+        <a href="https://geojson.io/" target="_blank"> geojson.io </a>
+        <el-input
+          v-model="customGeoForm.name"
+          placeholder="Custom constraint name"
+        />
+        <el-input
+          v-model="customGeoForm.geojson"
+          :rows="2"
+          type="textarea"
+          placeholder="GeoJSON"
+        />
+        <el-button @click="addCustomGeo">
+          Add Custom Geographic Constraint
         </el-button>
       </el-form-item>
     </el-form>
@@ -109,6 +150,9 @@ import { useSurveyApi } from '@/composables/api/survey';
 
 import { ElMessageBox, ElMessage } from 'element-plus';
 
+import geoFeaturesJson from '@/assets/json/geoFeatures.json';
+const customGeoFeatures = {};
+
 const accountStore = useAccountStore(); // account store
 const { getSurveys, updateSurvey, deleteSurvey, getCategories } =
   useSurveyApi(); // survey api
@@ -126,12 +170,21 @@ const filteredTableData = computed(() =>
 );
 
 const updateDialogVisible = ref(false);
+const geoFeaturesList = ref([]);
 const form = reactive({
   id: '',
   name: '',
   description: '',
   category: '',
   expireDate: null,
+  geoFeatures: [],
+});
+
+const geoOptions = Object.keys(geoFeaturesJson);
+const showCustomGeoBox = ref(false);
+const customGeoForm = reactive({
+  name: '',
+  geojson: '',
 });
 
 onMounted(async () => {
@@ -218,13 +271,75 @@ function updateSurveyDialog(id) {
       form.description = item.description;
       form.category = item.categoryId;
       form.expireDate = item.expireDate;
+      form.geoFeatures = item.geoFeatures;
       updateDialogVisible.value = true;
+      geoFeaturesList.value = [];
+
+      for (const geoItem of form.geoFeatures) {
+        geoFeaturesList.value.push(geoItem.name);
+        if (!geoOptions.includes(geoItem.name))
+          geoOptions.push(customGeoForm.name);
+
+        if (!Object.keys(geoFeaturesJson).includes(geoItem.name))
+          customGeoFeatures[geoItem.name] = {
+            name: geoItem.name,
+            type: geoItem.type,
+            coordinates: geoItem.coordinates,
+          };
+      }
+
       return;
     }
   }
 }
 
+function addCustomGeo() {
+  if (!customGeoForm.name || !customGeoForm.geojson) {
+    return ElMessageBox.alert('Please fill all areas!', 'Error', {
+      confirmButtonText: 'OK',
+    });
+  }
+
+  let parsedInput = {};
+  try {
+    parsedInput.name = customGeoForm.name;
+
+    const parsedStr = JSON.parse(customGeoForm.geojson);
+    parsedInput.type = parsedStr.features[0].geometry.type;
+    parsedInput.coordinates = parsedStr.features[0].geometry.coordinates;
+  } catch (e) {
+    return ElMessageBox.alert(
+      'An error happened while trying to parse your input: ' + e.message,
+      'Error',
+      {
+        confirmButtonText: 'OK',
+      }
+    );
+  }
+
+  customGeoFeatures[customGeoForm.name] = parsedInput;
+
+  geoOptions.push(customGeoForm.name);
+  geoFeaturesList.value.push(customGeoForm.name);
+
+  customGeoForm.name = '';
+  customGeoForm.geojson = '';
+
+  showCustomGeoBox.value = false;
+}
+
 async function updateSurveyById() {
+  form.geoFeatures = [];
+
+  if (geoFeaturesList.value.length > 0) {
+    for (const geoItem of geoFeaturesList.value) {
+      if (Object.keys(geoFeaturesJson).includes(geoItem))
+        form.geoFeatures.push(geoFeaturesJson[geoItem]);
+      else if (Object.keys(customGeoFeatures).includes(geoItem))
+        form.geoFeatures.push(customGeoFeatures[geoItem]);
+    }
+  }
+
   try {
     await updateSurvey(
       accountStore.access.token,
@@ -232,7 +347,8 @@ async function updateSurveyById() {
       form.name,
       form.description,
       form.category,
-      form.expireDate
+      form.expireDate,
+      form.geoFeatures
     );
     ElMessage({
       type: 'success',
