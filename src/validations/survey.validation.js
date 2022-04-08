@@ -67,6 +67,11 @@ const updateSurvey = {
       description: Joi.string(),
       categoryId: Joi.custom(objectId),
       expireDate: Joi.date().format('YYYY-MM-DD').utc().allow(null),
+      geoFeatures: Joi.array().items({
+        name: Joi.string(),
+        type: Joi.string().required(),
+        coordinates: Joi.array().required(),
+      }),
     })
     .min(1),
 };
