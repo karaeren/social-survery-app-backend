@@ -125,32 +125,59 @@ const deleteSurveyById = async (surveyId) => {
 const validateAnswers = (questions, userAnswers) => {
   const questionMap = {};
 
-  questions.map((question) => {
-    questionMap[question.question_id] = question.answers.map(
-      (x) => x.answer_id
-    );
+  // eslint-disable-next-line no-restricted-syntax
+  for (const question of questions) {
+    questionMap[question.questionId] = {
+      answered: false,
+      questionType: question.questionType,
+      ...(question.questionType === 'slider' && {
+        sliderMin: question.answers[0].sliderMin,
+      }),
+      ...(question.questionType === 'slider' && {
+        sliderMax: question.answers[0].sliderMax,
+      }),
+      answers: question.answers.map((x) => x.answerId),
+    };
+  }
 
-    return {};
-  });
+  // eslint-disable-next-line no-restricted-syntax
+  for (const answer of userAnswers) {
+    const selectedQuestion = questionMap[answer.questionId];
 
-  userAnswers.map((userAnswer) => {
-    if (
-      questionMap[userAnswer.question_id] &&
-      questionMap[userAnswer.question_id].includes(userAnswer.answer_id)
-    ) {
-      delete questionMap[userAnswer.question_id];
-    } else {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Answers are not valid');
+    if (selectedQuestion) {
+      if (
+        selectedQuestion.questionType === 'multiple-choice' &&
+        typeof answer.multipleChoiceValue !== 'undefined' &&
+        selectedQuestion.answers.includes(answer.multipleChoiceValue)
+      ) {
+        questionMap[answer.questionId].answered = true;
+      } else if (
+        selectedQuestion.questionType === 'ranking' &&
+        typeof answer.rankingValue !== 'undefined' &&
+        selectedQuestion.answers.filter((x) => !answer.rankingValue.includes(x))
+          .length === 0 // difference between answer id's and user rankings
+      ) {
+        questionMap[answer.questionId].answered = true;
+      } else if (
+        selectedQuestion.questionType === 'slider' &&
+        typeof answer.sliderValue !== 'undefined' &&
+        answer.sliderValue >= selectedQuestion.sliderMin &&
+        answer.sliderValue <= selectedQuestion.sliderMax
+      ) {
+        questionMap[answer.questionId].answered = true;
+      } else {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Answers are not valid');
+      }
     }
+  }
 
-    return {};
-  });
-
-  if (Object.keys(questionMap).length > 0) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      'Not all questions are answered'
-    );
+  // eslint-disable-next-line no-restricted-syntax
+  for (const question of Object.keys(questionMap)) {
+    if (!questionMap[question].answered)
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Not all questions are answered'
+      );
   }
 };
 

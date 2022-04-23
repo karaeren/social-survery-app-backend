@@ -1,6 +1,45 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
+const questionTypes = ['multiple-choice', 'slider', 'ranking'];
+
+const answerSchema = new mongoose.Schema({
+  answerId: {
+    type: Number,
+    required: true,
+  },
+  answerText: {
+    type: String,
+    required: true,
+  },
+  sliderMin: {
+    type: Number,
+  },
+  sliderMax: {
+    type: Number,
+  },
+});
+
+const questionSchema = new mongoose.Schema({
+  questionId: {
+    type: Number,
+    required: true,
+  },
+  questionText: {
+    type: String,
+    required: true,
+  },
+  questionType: {
+    type: String,
+    enum: questionTypes,
+    default: 'multiple-choice',
+  },
+  answers: {
+    type: [answerSchema],
+    required: true,
+  },
+});
+
 const surveySchema = mongoose.Schema({
   name: {
     type: String,
@@ -24,7 +63,7 @@ const surveySchema = mongoose.Schema({
     default: 0,
   },
   questions: {
-    type: Array,
+    type: [questionSchema],
     default: [],
   },
   geoFeatures: {

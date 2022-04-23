@@ -39,12 +39,15 @@ const createSurvey = {
     expireDate: Joi.date().format('YYYY-MM-DD').utc().allow(null),
     questions: Joi.array()
       .items({
-        question_id: Joi.number().integer().required(),
-        question_text: Joi.string().required(),
+        questionId: Joi.number().integer().required(),
+        questionText: Joi.string().required(),
+        questionType: Joi.string(),
         answers: Joi.array()
           .items({
-            answer_id: Joi.number().integer().required(),
-            answer_text: Joi.string().required(),
+            answerId: Joi.number().integer().required(),
+            answerText: Joi.string().required(),
+            sliderMin: Joi.number(),
+            sliderMax: Joi.number(),
           })
           .required(),
       })
@@ -93,8 +96,10 @@ const submitAnswers = {
       .required(),
     answers: Joi.array()
       .items({
-        question_id: Joi.number().integer().required(),
-        answer_id: Joi.number().integer().required(),
+        questionId: Joi.number().integer().required(),
+        multipleChoiceValue: Joi.number().integer(),
+        sliderValue: Joi.number(),
+        rankingValue: Joi.array().items(Joi.number()),
       })
       .required()
       .min(1),

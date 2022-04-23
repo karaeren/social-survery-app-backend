@@ -114,12 +114,12 @@
  *               expireDate: 2022-06-18
  *               questions: [
  *                 {
- *                   question_id: 1,
- *                   question_text: "Question 1",
+ *                   questionId: 1,
+ *                   questionText: "Question 1",
  *                   answers: [
  *                     {
- *                       answer_id: 1,
- *                       answer_text: "Answer 1"
+ *                       answerId: 1,
+ *                       answerText: "Answer 1"
  *                     }
  *                   ]
  *                 }
@@ -349,8 +349,16 @@
  *               }
  *               answers: [
  *                 {
- *                   question_id: 1,
- *                   answer_id: 1
+ *                   questionId: 1,
+ *                   multipleChoiceValue: 1
+ *                 },
+ *                 {
+ *                   questionId: 2,
+ *                   sliderValue: 73
+ *                 },
+ *                 {
+ *                   questionId: 3,
+ *                   rankingValue: [3,1,2]
  *                 }
  *               ]
  *     responses:
