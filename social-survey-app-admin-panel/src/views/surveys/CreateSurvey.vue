@@ -83,7 +83,7 @@
       <el-timeline style="padding-left: 0">
         <el-timeline-item
           v-for="(question, question_index) in form.questions"
-          :key="question.question_id"
+          :key="question.questionId"
           center
         >
           <el-card>
@@ -103,7 +103,7 @@
                 @click="moveQuestion(question_index, 'down')"
               />
               <h4 style="margin: 0 12px">
-                Question #{{ question.question_id }}
+                Question #{{ question.questionId }}
               </h4>
               <el-button
                 type="danger"
@@ -122,7 +122,21 @@
               style="margin-top: 1rem"
             >
               <el-form-item prop="name" label="Question">
-                <el-input v-model="question.question_text" />
+                <el-input v-model="question.questionText" />
+              </el-form-item>
+              <el-form-item prop="question_type" label="Question type">
+                <el-select
+                  v-model="question.questionType"
+                  class="m-2"
+                  placeholder="Select"
+                  size="large"
+                >
+                  <el-option
+                    v-for="item in questionTypeOptions"
+                    :key="item"
+                    :value="item"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item
                 v-for="(answer, answer_index) in question.answers"
@@ -130,16 +144,32 @@
                 :label="'Answer'"
                 :prop="'answers.' + answer_index + '.value'"
               >
-                <el-input v-model="answer.answer_text" />
+                <el-input v-model="answer.answerText" />
                 <el-button
+                  v-if="question.questionType !== 'slider'"
                   style="margin-top: 0.5rem"
                   @click.prevent="removeAnswer(question_index, answer_index)"
                 >
                   Delete
                 </el-button>
               </el-form-item>
+              <el-form-item
+                v-if="question.questionType === 'slider'"
+                label="Slider Min"
+              >
+                <el-input v-model="question.answers[0].sliderMin" />
+              </el-form-item>
+              <el-form-item
+                v-if="question.questionType === 'slider'"
+                label="Slider Max"
+              >
+                <el-input v-model="question.answers[0].sliderMax" />
+              </el-form-item>
               <el-form-item>
-                <el-button @click="addAnswer(question_index)">
+                <el-button
+                  v-if="question.questionType !== 'slider'"
+                  @click="addAnswer(question_index)"
+                >
                   Add Answer
                 </el-button>
               </el-form-item>
@@ -156,7 +186,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAccountStore } from '@/stores/account';
@@ -183,6 +213,8 @@ const idList = {
   2: 3,
 };
 
+const questionTypeOptions = ['multiple-choice', 'slider', 'ranking'];
+
 const geoFeaturesList = ref([]);
 const form = reactive({
   name: '',
@@ -192,34 +224,45 @@ const form = reactive({
   geoFeatures: [],
   questions: [
     {
-      question_id: 1,
-      question_text: 'Question 1',
+      questionId: 1,
+      questionText: 'Question 1',
+      questionType: 'multiple-choice',
       answers: [
         {
-          answer_id: 1,
-          answer_text: 'Answer 1',
+          answerId: 1,
+          answerText: 'Answer 1',
         },
         {
-          answer_id: 2,
-          answer_text: 'Answer 2',
+          answerId: 2,
+          answerText: 'Answer 2',
         },
       ],
     },
     {
-      question_id: 2,
-      question_text: 'Question 2',
+      questionId: 2,
+      questionText: 'Question 2',
+      questionType: 'multiple-choice',
       answers: [
         {
-          answer_id: 1,
-          answer_text: 'Answer 1',
+          answerId: 1,
+          answerText: 'Answer 1',
         },
         {
-          answer_id: 2,
-          answer_text: 'Answer 2',
+          answerId: 2,
+          answerText: 'Answer 2',
         },
       ],
     },
   ],
+});
+watch(form, () => {
+  for (const question of form.questions) {
+    if (question.questionType === 'slider') {
+      if (question.answers.length > 1) question.answers.splice(1); // only keep first one
+      if (!question.answers[0].sliderMin) question.answers[0].sliderMin = 0;
+      if (!question.answers[0].sliderMax) question.answers[0].sliderMax = 100;
+    }
+  }
 });
 
 const geoOptions = Object.keys(geoFeaturesJson);
@@ -245,16 +288,17 @@ const addQuestion = () => {
   idList.lastId++;
 
   form.questions.push({
-    question_id: newId,
-    question_text: 'Question ' + newId,
+    questionId: newId,
+    questionText: 'Question ' + newId,
+    questionType: 'multiple-choice',
     answers: [
       {
-        answer_id: 1,
-        answer_text: 'Answer 1',
+        answerId: 1,
+        answerText: 'Answer 1',
       },
       {
-        answer_id: 2,
-        answer_text: 'Answer 2',
+        answerId: 2,
+        answerText: 'Answer 2',
       },
     ],
   });
@@ -338,12 +382,12 @@ function removeAnswer(questionIndex, answerIndex) {
 }
 
 function addAnswer(questionIndex) {
-  const newId = idList[form.questions[questionIndex].question_id];
-  idList[form.questions[questionIndex].question_id]++;
+  const newId = idList[form.questions[questionIndex].questionId];
+  idList[form.questions[questionIndex].questionId]++;
 
   form.questions[questionIndex].answers.push({
-    answer_id: newId,
-    answer_text: 'Answer ' + newId,
+    answerId: newId,
+    answerText: 'Answer ' + newId,
   });
 }
 
