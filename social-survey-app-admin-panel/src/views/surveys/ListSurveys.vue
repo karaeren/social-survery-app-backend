@@ -258,7 +258,7 @@ function filterCategory(value, row) {
 
 function openResults(id) {
   window.open(
-    `https://socialsurveyapp.software/results.html?surveyId=${id}`,
+    `https://socialsurveyapp.software/results/#/?surveyId=${id}`,
     '_blank'
   );
 }
