@@ -433,10 +433,10 @@ function calculateAnswers() {
   const _min = Math.min(...sliderSubmissions);
   marks.marks[_min] = `Minimum: ${_min}`;
   const _max = Math.max(...sliderSubmissions);
-  marks.marks[_max] = `Minimum: ${_max}`;
+  marks.marks[_max] = `Maximum: ${_max}`;
   const _sum = sliderSubmissions.reduce((a, b) => a + b, 0);
   const _avg = _sum / sliderSubmissions.length || 0;
-  marks.marks[_avg] = `Average: ${_avg}`;
+  marks.marks[_avg] = `Average: ${_avg.toFixed(1)}`;
 
   createMapData();
 }
