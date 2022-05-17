@@ -1,5 +1,5 @@
 {
-  "name": "social-survey-app-admin-panel",
+  "name": "social-survey-app-results",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
